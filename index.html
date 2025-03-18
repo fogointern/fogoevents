@@ -5,51 +5,59 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🔥 Fogo Events 🔥</title>
     <style>
-        /* 🔥 Background GIF */
-        body {
-            background: url('https://media.giphy.com/media/o6JmK6ApWB2pq/giphy.gif') no-repeat center center fixed;
-            background-size: cover;
+        /* 🔥 Background Fullscreen dengan Canvas */
+        body, html {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
             font-family: Arial, sans-serif;
             color: white;
             text-align: center;
             position: relative;
         }
 
-        /* 🔥 Overlay supaya teks lebih jelas */
-        body::before {
-            content: "";
+        /* 🔥 Canvas untuk efek api & listrik */
+        #fireCanvas {
             position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.6);
-            z-index: -1;
+            z-index: -2;
         }
 
-        /* 🔥 Efek teks berapi-api */
-        @keyframes fireText {
-            0% { text-shadow: 0 0 10px #ff4500, 0 0 20px #ff6347; }
-            50% { text-shadow: 0 0 20px #ff6347, 0 0 30px #ff4500; }
-            100% { text-shadow: 0 0 10px #ff4500, 0 0 20px #ff6347; }
+        /* 🔥 Overlay Gelap agar teks lebih jelas */
+        #overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: -1;
         }
 
         /* 🔥 Styling untuk judul */
         #todayTitle {
-            font-size: 40px;
+            font-size: 42px;
             font-weight: bold;
             padding: 15px;
             border-radius: 10px;
             background: rgba(0, 0, 0, 0.8);
-            box-shadow: 0px 5px 15px rgba(255, 69, 0, 0.9);
+            box-shadow: 0px 5px 15px rgba(255, 69, 0, 1);
             display: inline-block;
             margin: 20px auto;
-            animation: fireText 1.5s infinite alternate;
-            transition: transform 0.3s ease-in-out;
+            text-shadow: 0 0 20px rgba(255, 69, 0, 0.9), 0 0 40px rgba(255, 0, 0, 0.8);
+            animation: flicker 1.5s infinite alternate;
         }
 
-        #todayTitle:hover {
-            transform: scale(1.1);
+        /* 🔥 Efek flicker untuk teks api */
+        @keyframes flicker {
+            0% { opacity: 1; text-shadow: 0 0 15px rgba(255, 69, 0, 1), 0 0 30px rgba(255, 0, 0, 0.9); }
+            50% { opacity: 0.8; text-shadow: 0 0 25px rgba(255, 165, 0, 1), 0 0 50px rgba(255, 69, 0, 1); }
+            100% { opacity: 1; text-shadow: 0 0 20px rgba(255, 69, 0, 1), 0 0 40px rgba(255, 0, 0, 0.9); }
         }
 
         /* 🔥 Styling untuk event list */
@@ -64,14 +72,8 @@
             margin: 10px auto;
             border-radius: 10px;
             font-size: 20px;
-            box-shadow: 0px 4px 15px rgba(255, 165, 0, 0.8);
+            box-shadow: 0px 4px 10px rgba(255, 165, 0, 0.8);
             width: 60%;
-            transition: all 0.3s ease-in-out;
-        }
-
-        #events li:hover {
-            transform: scale(1.05);
-            box-shadow: 0px 6px 20px rgba(255, 165, 0, 1);
         }
 
         /* 🔥 Styling untuk iframe Google Calendar */
@@ -93,11 +95,11 @@
             display: inline-block;
         }
     </style>
-
-    <script defer src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
+ <script defer src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
     <script>
         const API_KEY = 'AIzaSyDjVXwUbLWZv052kRzAXmjvxEWTGuY7BLw'; 
         const CALENDAR_ID = '287026a99cb10f73790c5dbcebfc76a12e564079e02f3b3be161b752b7d78f56@group.calendar.google.com'; 
+
         function gapiLoaded() {
             gapi.load('client', loadClient);
         }
@@ -110,13 +112,14 @@
         }
 
         function getEvents() {
-            const todayStart = new Date().setHours(0, 0, 0, 0);
-            const todayEnd = new Date().setHours(23, 59, 59, 999);
+            const now = new Date();
+            const todayStart = new Date(now.setHours(0, 0, 0, 0)).toISOString(); // 00:00 hari ini
+            const todayEnd = new Date(now.setHours(23, 59, 59, 999)).toISOString(); // 23:59 hari ini
 
             gapi.client.calendar.events.list({
                 'calendarId': CALENDAR_ID,
-                'timeMin': new Date(todayStart).toISOString(),
-                'timeMax': new Date(todayEnd).toISOString(),
+                'timeMin': todayStart,
+                'timeMax': todayEnd,
                 'showDeleted': false,
                 'singleEvents': true,
                 'orderBy': 'startTime'
@@ -129,36 +132,45 @@
                     events.forEach(event => {
                         const li = document.createElement('li');
 
+                       
                         const eventTime = new Date(event.start.dateTime || event.start.date);
                         const localTime = new Intl.DateTimeFormat(navigator.language, {
-                            hour: '2-digit',
-                            minute: '2-digit',
+                            dateStyle: 'full',
+                            timeStyle: 'short',
                             timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
                         }).format(eventTime);
 
-                        li.innerHTML = `<strong>${event.summary}</strong> - ⏰ ${localTime}`;
+                        li.innerHTML = `<strong>${event.summary}</strong> - ${localTime}`;
                         eventsList.appendChild(li);
                     });
                 } else {
-                    eventsList.innerHTML = '<li>🔥 No Events Today 🔥</li>';
+                    eventsList.innerHTML = '<li>No Events Today</li>';
                 }
             }).catch(error => {
                 console.error("Error fetching events:", error);
             });
         }
     </script>
+
+
+
+    
 </head>
 <body>
+
+    <!-- 🔥 Canvas untuk efek api & listrik -->
+    <canvas id="fireCanvas"></canvas>
+    <div id="overlay"></div>
 
     <!-- 🔥 Judul dengan tanggal -->
     <h1 id="todayTitle"></h1>
 
     <!-- 🔥 Event Hari Ini -->
-    <h2 style="text-shadow: 0px 0px 15px orange;">🔥 Fogo Events 🔥</h2>
+    <h2>🔥 Fogo Events 🔥</h2>
     <ul id="events">Loading events...</ul>
 
     <!-- 🔥 Google Calendar -->
-    <h2 style="text-shadow: 0px 0px 15px orange;">🔥 Full Calendar 🔥</h2>
+    <h2>🔥 Full Calendar 🔥</h2>
     <iframe id="calendarFrame" width="90%" height="600" frameborder="0" scrolling="no"></iframe>
 
     <!-- 🔥 Footer -->
@@ -176,18 +188,61 @@
             // Set teks dengan tanggal
             todayTitle.innerHTML = `🔥 Fogo Events - ${formattedDate} 🔥`;
 
-            // 🔥 Efek perubahan warna setiap 2 detik
-            setInterval(() => {
-                const colors = ["#ff5733", "#33ff57", "#3357ff", "#ff33a8", "#f39c12"];
-                const randomColor = colors[Math.floor(Math.random() * colors.length)];
-                todayTitle.style.color = randomColor;
-            }, 2000);
+            // Pilih warna acak untuk teks
+            const colors = ["#ff5733", "#33ff57", "#3357ff", "#ff33a8", "#f39c12"];
+            const randomColor = colors[Math.floor(Math.random() * colors.length)];
+            todayTitle.style.color = randomColor;
 
             // 🔥 Set timezone pengguna
             const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
             document.getElementById("calendarFrame").src = 
                 `https://calendar.google.com/calendar/embed?src=YOUR_CALENDAR_ID_HERE&ctz=${encodeURIComponent(userTimezone)}`;
         });
+
+        // 🔥 Efek api dengan canvas
+        const canvas = document.getElementById('fireCanvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        let particles = [];
+
+        class Particle {
+            constructor(x, y) {
+                this.x = x;
+                this.y = y;
+                this.size = Math.random() * 5 + 1;
+                this.speedY = Math.random() * 3 - 1.5;
+                this.color = `rgba(255, ${Math.random() * 100}, 0, 0.8)`;
+            }
+
+            update() {
+                this.y -= this.speedY;
+                this.size -= 0.05;
+            }
+
+            draw() {
+                ctx.fillStyle = this.color;
+                ctx.beginPath();
+                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+        }
+
+        function animateParticles() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            particles.push(new Particle(Math.random() * canvas.width, canvas.height));
+            particles.forEach((particle, index) => {
+                particle.update();
+                particle.draw();
+                if (particle.size <= 0.2) {
+                    particles.splice(index, 1);
+                }
+            });
+            requestAnimationFrame(animateParticles);
+        }
+
+        animateParticles();
     </script>
 
 </body>
