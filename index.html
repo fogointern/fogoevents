@@ -1,11 +1,12 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🔥 Fogo Events 🔥</title>
+    <title>⚡🔥 Fogo Events Today 🔥⚡</title>
+
     <style>
-        /* 🔥 Background Fullscreen dengan Canvas */
+        /* 🔥 Fullscreen Background */
         body, html {
             margin: 0;
             padding: 0;
@@ -18,8 +19,8 @@
             position: relative;
         }
 
-        /* 🔥 Canvas untuk efek api & listrik */
-        #fireCanvas {
+        /* ⚡ Canvas untuk efek listrik */
+        #lightningCanvas {
             position: fixed;
             top: 0;
             left: 0;
@@ -28,7 +29,21 @@
             z-index: -2;
         }
 
-        /* 🔥 Overlay Gelap agar teks lebih jelas */
+        /* 🔥 Background Api */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://media.giphy.com/media/o6JmK6ApWB2pq/giphy.gif') no-repeat center center fixed;
+            background-size: cover;
+            opacity: 0.6;
+            z-index: -1;
+        }
+
+        /* 🔥 Overlay Gelap supaya teks lebih jelas */
         #overlay {
             position: fixed;
             top: 0;
@@ -39,63 +54,49 @@
             z-index: -1;
         }
 
-        /* 🔥 Styling untuk judul */
+        /* ⚡ Styling untuk judul */
         #todayTitle {
             font-size: 42px;
             font-weight: bold;
             padding: 15px;
             border-radius: 10px;
             background: rgba(0, 0, 0, 0.8);
-            box-shadow: 0px 5px 15px rgba(255, 69, 0, 1);
+            box-shadow: 0px 5px 15px rgba(0, 162, 255, 1);
             display: inline-block;
             margin: 20px auto;
-            text-shadow: 0 0 20px rgba(255, 69, 0, 0.9), 0 0 40px rgba(255, 0, 0, 0.8);
+            text-shadow: 0 0 20px rgba(0, 162, 255, 0.9), 0 0 40px rgba(0, 119, 255, 0.8);
             animation: flicker 1.5s infinite alternate;
         }
 
-        /* 🔥 Efek flicker untuk teks api */
+        /* ⚡ Efek flicker listrik */
         @keyframes flicker {
-            0% { opacity: 1; text-shadow: 0 0 15px rgba(255, 69, 0, 1), 0 0 30px rgba(255, 0, 0, 0.9); }
-            50% { opacity: 0.8; text-shadow: 0 0 25px rgba(255, 165, 0, 1), 0 0 50px rgba(255, 69, 0, 1); }
-            100% { opacity: 1; text-shadow: 0 0 20px rgba(255, 69, 0, 1), 0 0 40px rgba(255, 0, 0, 0.9); }
-        }
-
-        /* 🔥 Styling untuk event list */
-        #events {
-            list-style: none;
-            padding: 0;
-        }
-
-        #events li {
-            background: rgba(0, 0, 0, 0.8);
-            padding: 15px;
-            margin: 10px auto;
-            border-radius: 10px;
-            font-size: 20px;
-            box-shadow: 0px 4px 10px rgba(255, 165, 0, 0.8);
-            width: 60%;
-        }
-
-        /* 🔥 Styling untuk iframe Google Calendar */
-        iframe {
-            border-radius: 10px;
-            box-shadow: 0px 5px 20px rgba(255, 69, 0, 0.9);
-            background: rgba(0, 0, 0, 0.8);
-            padding: 10px;
-        }
-
-        /* 🔥 Footer */
-        #footer {
-            margin-top: 30px;
-            font-size: 18px;
-            font-weight: bold;
-            background: rgba(0, 0, 0, 0.8);
-            padding: 15px;
-            border-radius: 10px;
-            display: inline-block;
+            0% { opacity: 1; text-shadow: 0 0 15px rgba(0, 162, 255, 1), 0 0 30px rgba(0, 119, 255, 0.9); }
+            50% { opacity: 0.8; text-shadow: 0 0 25px rgba(0, 255, 255, 1), 0 0 50px rgba(0, 162, 255, 1); }
+            100% { opacity: 1; text-shadow: 0 0 20px rgba(0, 162, 255, 1), 0 0 40px rgba(0, 119, 255, 0.9); }
         }
     </style>
- <script defer src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
+</head>
+<body>
+
+    <!-- ⚡ Canvas untuk efek listrik -->
+    <canvas id="lightningCanvas"></canvas>
+    <div id="overlay"></div>
+
+    <!-- ⚡ Judul -->
+    <h1 id="todayTitle">⚡🔥 Fogo Events 🔥⚡</h1>
+
+    <!-- ⚡ Event Hari Ini -->
+    <h2>🔥 Events Today 🔥</h2>
+    <ul id="events">Loading events...</ul>
+
+    <!-- ⚡ Google Calendar -->
+    <h2>🔥 Full Calendar 🔥</h2>
+    <iframe id="calendarFrame" frameborder="0" scrolling="no"></iframe>
+
+    <!-- 🔥 Footer -->
+    <div id="footer">Made with ⚡ by Intern</div>
+
+    <script defer src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
     <script>
         const API_KEY = 'AIzaSyDjVXwUbLWZv052kRzAXmjvxEWTGuY7BLw'; 
         const CALENDAR_ID = '287026a99cb10f73790c5dbcebfc76a12e564079e02f3b3be161b752b7d78f56@group.calendar.google.com'; 
@@ -113,8 +114,8 @@
 
         function getEvents() {
             const now = new Date();
-            const todayStart = new Date(now.setHours(0, 0, 0, 0)).toISOString(); // 00:00 hari ini
-            const todayEnd = new Date(now.setHours(23, 59, 59, 999)).toISOString(); // 23:59 hari ini
+            const todayStart = new Date(now.setHours(0, 0, 0, 0)).toISOString();
+            const todayEnd = new Date(now.setHours(23, 59, 59, 999)).toISOString();
 
             gapi.client.calendar.events.list({
                 'calendarId': CALENDAR_ID,
@@ -132,15 +133,14 @@
                     events.forEach(event => {
                         const li = document.createElement('li');
 
-                       
                         const eventTime = new Date(event.start.dateTime || event.start.date);
                         const localTime = new Intl.DateTimeFormat(navigator.language, {
-                            dateStyle: 'full',
-                            timeStyle: 'short',
+                            hour: '2-digit',
+                            minute: '2-digit',
                             timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
                         }).format(eventTime);
 
-                        li.innerHTML = `<strong>${event.summary}</strong> - ${localTime}`;
+                        li.innerHTML = `<strong>${event.summary}</strong> - ⏰ ${localTime}`;
                         eventsList.appendChild(li);
                     });
                 } else {
@@ -150,99 +150,46 @@
                 console.error("Error fetching events:", error);
             });
         }
-    </script>
 
-
-
-    
-</head>
-<body>
-
-    <!-- 🔥 Canvas untuk efek api & listrik -->
-    <canvas id="fireCanvas"></canvas>
-    <div id="overlay"></div>
-
-    <!-- 🔥 Judul dengan tanggal -->
-    <h1 id="todayTitle"></h1>
-
-    <!-- 🔥 Event Hari Ini -->
-    <h2>🔥 Fogo Events 🔥</h2>
-    <ul id="events">Loading events...</ul>
-
-    <!-- 🔥 Google Calendar -->
-    <h2>🔥 Full Calendar 🔥</h2>
-    <iframe id="calendarFrame" width="90%" height="600" frameborder="0" scrolling="no"></iframe>
-
-    <!-- 🔥 Footer -->
-    <div id="footer">Made with ❤️ by Intern</div>
-
-    <script>
         document.addEventListener("DOMContentLoaded", function () {
-            const todayTitle = document.getElementById("todayTitle");
-
-            // Format tanggal hari ini dalam bahasa Inggris
-            const today = new Date();
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            const formattedDate = today.toLocaleDateString('en-US', options);
-
-            // Set teks dengan tanggal
-            todayTitle.innerHTML = `🔥 Fogo Events - ${formattedDate} 🔥`;
-
-            // Pilih warna acak untuk teks
-            const colors = ["#ff5733", "#33ff57", "#3357ff", "#ff33a8", "#f39c12"];
-            const randomColor = colors[Math.floor(Math.random() * colors.length)];
-            todayTitle.style.color = randomColor;
-
-            // 🔥 Set timezone pengguna
             const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
             document.getElementById("calendarFrame").src = 
-                `https://calendar.google.com/calendar/embed?src=YOUR_CALENDAR_ID_HERE&ctz=${encodeURIComponent(userTimezone)}`;
+                `https://calendar.google.com/calendar/embed?src=${CALENDAR_ID}&ctz=${encodeURIComponent(userTimezone)}`;
         });
 
-        // 🔥 Efek api dengan canvas
-        const canvas = document.getElementById('fireCanvas');
-        const ctx = canvas.getContext('2d');
+        // ⚡ Efek Listrik
+        const canvas = document.getElementById("lightningCanvas");
+        const ctx = canvas.getContext("2d");
         canvas.width = window.innerWidth;
         canvas.height = window.innerHeight;
 
-        let particles = [];
+        function drawLightning(x, y, endX, endY, depth) {
+            if (depth > 6) return;
+            const midX = (x + endX) / 2 + (Math.random() - 0.5) * 50;
+            const midY = (y + endY) / 2 + (Math.random() - 0.5) * 50;
 
-        class Particle {
-            constructor(x, y) {
-                this.x = x;
-                this.y = y;
-                this.size = Math.random() * 5 + 1;
-                this.speedY = Math.random() * 3 - 1.5;
-                this.color = `rgba(255, ${Math.random() * 100}, 0, 0.8)`;
-            }
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            ctx.lineTo(midX, midY);
+            ctx.lineTo(endX, endY);
+            ctx.strokeStyle = `rgba(0, 162, 255, ${Math.random() * 0.5 + 0.5})`;
+            ctx.lineWidth = 2 + Math.random() * 3;
+            ctx.shadowColor = "cyan";
+            ctx.shadowBlur = 10;
+            ctx.stroke();
 
-            update() {
-                this.y -= this.speedY;
-                this.size -= 0.05;
-            }
-
-            draw() {
-                ctx.fillStyle = this.color;
-                ctx.beginPath();
-                ctx.arc(this.x, this.y, this.size, 0, Math.PI * 2);
-                ctx.fill();
-            }
+            drawLightning(x, y, midX, midY, depth + 1);
+            drawLightning(midX, midY, endX, endY, depth + 1);
         }
 
-        function animateParticles() {
+        function animateLightning() {
             ctx.clearRect(0, 0, canvas.width, canvas.height);
-            particles.push(new Particle(Math.random() * canvas.width, canvas.height));
-            particles.forEach((particle, index) => {
-                particle.update();
-                particle.draw();
-                if (particle.size <= 0.2) {
-                    particles.splice(index, 1);
-                }
-            });
-            requestAnimationFrame(animateParticles);
+            const startX = Math.random() * canvas.width;
+            drawLightning(startX, 0, startX + Math.random() * 200 - 100, canvas.height, 0);
+            setTimeout(animateLightning, Math.random() * 1000 + 500);
         }
 
-        animateParticles();
+        animateLightning();
     </script>
 
 </body>
