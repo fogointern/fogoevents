@@ -1,112 +1,223 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="id">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚡ Fogo Events ⚡</title>
+    <title>⚡🔥 Fogo Events 🔥⚡</title>
+    
     <style>
-        /* Electric Background Animation */
-        body {
-            background: black;
-            color: white;
-            font-family: Arial, sans-serif;
+        /* 🔥 Fullscreen Background */
+        body, html {
             margin: 0;
             padding: 0;
+            width: 100%;
+            height: 100%;
             overflow: hidden;
-        }
-        .container {
-            position: relative;
-            z-index: 1;
-            padding: 20px;
+            font-family: Arial, sans-serif;
+            color: white;
             text-align: center;
+            position: relative;
+            background-color: black;
         }
-        h1, h2 {
-            text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff, 0 0 30px #00ffff;
-        }
-        ul {
-            list-style: none;
-            padding: 0;
-        }
-        li {
-            background: rgba(0, 0, 0, 0.7);
-            margin: 10px auto;
-            padding: 15px;
-            border-radius: 10px;
-            width: 80%;
-            box-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff;
-        }
-        a {
-            color: #00ffff;
-            text-decoration: none;
-            transition: text-shadow 0.3s;
-        }
-        a:hover {
-            text-shadow: 0 0 10px #00ffff, 0 0 20px #00ffff;
-        }
-        /* Electric Animation */
-        .electric {
-            position: absolute;
+
+        /* ⚡ Canvas untuk efek listrik */
+        #lightningCanvas {
+            position: fixed;
             top: 0;
             left: 0;
             width: 100%;
             height: 100%;
-            background: url('electric.gif') repeat;
+            z-index: -2;
+        }
+
+        /* 🔥 Background Animasi Api */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: url('https://media.giphy.com/media/o6JmK6ApWB2pq/giphy.gif') no-repeat center center fixed;
+            background-size: cover;
             opacity: 0.5;
-            z-index: 0;
+            z-index: -1;
+        }
+
+        /* 🔥 Overlay Gelap supaya teks lebih jelas */
+        #overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: -1;
+        }
+
+        /* ⚡ Styling untuk judul */
+        #todayTitle {
+            font-size: 42px;
+            font-weight: bold;
+            padding: 15px;
+            border-radius: 10px;
+            background: rgba(0, 0, 0, 0.8);
+            box-shadow: 0px 5px 15px rgba(0, 162, 255, 1);
+            display: inline-block;
+            margin: 20px auto;
+            text-shadow: 0 0 20px rgba(0, 162, 255, 0.9), 0 0 40px rgba(0, 119, 255, 0.8);
+            animation: flicker 1.5s infinite alternate;
+        }
+
+        /* ⚡ Efek flicker listrik */
+        @keyframes flicker {
+            0% { opacity: 1; text-shadow: 0 0 15px cyan, 0 0 30px blue; }
+            50% { opacity: 0.8; text-shadow: 0 0 25px white, 0 0 50px cyan; }
+            100% { opacity: 1; text-shadow: 0 0 20px cyan, 0 0 40px blue; }
+        }
+
+        /* 🔥 Event List */
+        #events {
+            list-style: none;
+            padding: 0;
+            margin: 20px auto;
+            width: 80%;
+        }
+
+        #events li {
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            margin: 10px auto;
+            border-radius: 10px;
+            font-size: 22px;
+            box-shadow: 0px 4px 10px rgba(0, 162, 255, 0.8);
+        }
+
+        /* 🔥 Google Calendar Besar */
+        iframe {
+            width: 90%;
+            height: 700px;
+            border-radius: 10px;
+            box-shadow: 0px 5px 20px rgba(0, 162, 255, 0.9);
+        }
+
+        /* 🔥 Footer */
+        #footer {
+            margin-top: 30px;
+            font-size: 18px;
+            font-weight: bold;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            border-radius: 10px;
+            display: inline-block;
         }
     </style>
 </head>
 <body>
-    <div class="electric"></div>
-    <div class="container">
-        <h1>⚡ Fogo Events ⚡</h1>
-        <h2>Events Today</h2>
-        <ul id="events">
-            <!-- Events will be loaded here -->
-        </ul>
-        <h2>Full Calendar</h2>
-        <iframe id="calendarFrame" src="https://calendar.google.com/calendar/embed?src=YOUR_CALENDAR_ID&ctz=Asia/Jakarta" style="border: 0" width="80%" height="600" frameborder="0" scrolling="no"></iframe>
-        <div id="footer">Made with ⚡ by Intern</div>
-    </div>
 
+    <!-- ⚡ Canvas untuk efek listrik -->
+    <canvas id="lightningCanvas"></canvas>
+    <div id="overlay"></div>
+
+    <!-- ⚡ Judul -->
+    <h1 id="todayTitle">⚡🔥 Fogo Events 🔥⚡</h1>
+
+    <!-- ⚡ Event Hari Ini -->
+    <h2>🔥 Events Today 🔥</h2>
+    <ul id="events">Loading events...</ul>
+
+    <!-- ⚡ Google Calendar (DIBESARKAN) -->
+    <h2>🔥 Full Calendar 🔥</h2>
+    <iframe id="calendarFrame" frameborder="0" scrolling="no"></iframe>
+
+    <!-- 🔥 Footer -->
+    <div id="footer">Made with ⚡ by Intern</div>
+
+    <script defer src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
     <script>
-        document.addEventListener("DOMContentLoaded", function () {
-            const eventsList = document.getElementById('events');
-            eventsList.innerHTML = '<li>Loading events...</li>';
+         const API_KEY = 'AIzaSyDjVXwUbLWZv052kRzAXmjvxEWTGuY7BLw'; 
+        const CALENDAR_ID = '287026a99cb10f73790c5dbcebfc76a12e564079e02f3b3be161b752b7d78f56@group.calendar.google.com';
 
-            // Fetch events from Google Calendar API
-            // Ensure you have set up the API_KEY and CALENDAR_ID
-            const API_KEY = 'AIzaSyDjVXwUbLWZv052kRzAXmjvxEWTGuY7BLw'; 
-        const CALENDAR_ID = '287026a99cb10f73790c5dbcebfc76a12e564079e02f3b3be161b752b7d78f56@group.calendar.google.com'; 
+        function gapiLoaded() {
+            gapi.load('client', loadClient);
+        }
+
+        function loadClient() {
+            gapi.client.init({
+                apiKey: API_KEY,
+                discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"]
+            }).then(() => getEvents());
+        }
+
+        function getEvents() {
             const now = new Date();
             const todayStart = new Date(now.setHours(0, 0, 0, 0)).toISOString();
             const todayEnd = new Date(now.setHours(23, 59, 59, 999)).toISOString();
 
-            fetch(`https://www.googleapis.com/calendar/v3/calendars/${CALENDAR_ID}/events?key=${API_KEY}&timeMin=${todayStart}&timeMax=${todayEnd}&singleEvents=true&orderBy=startTime`)
-                .then(response => response.json())
-                .then(data => {
-                    eventsList.innerHTML = '';
-                    if (data.items.length > 0) {
-                        data.items.forEach(event => {
-                            const li = document.createElement('li');
-                            const eventTime = new Date(event.start.dateTime || event.start.date);
-                            const localTime = new Intl.DateTimeFormat('en-US', {
-                                dateStyle: 'full',
-                                timeStyle: 'short',
-                                timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
-                            }).format(eventTime);
-                            li.innerHTML = `<strong>${event.summary}</strong> - ${localTime}`;
-                            eventsList.appendChild(li);
-                        });
-                    } else {
-                        eventsList.innerHTML = '<li>No Events Today</li>';
-                    }
-                })
-                .catch(error => {
-                    console.error("Error fetching events:", error);
-                    eventsList.innerHTML = '<li>Error loading events</li>';
-                });
+            gapi.client.calendar.events.list({
+                'calendarId': CALENDAR_ID,
+                'timeMin': todayStart,
+                'timeMax': todayEnd,
+                'showDeleted': false,
+                'singleEvents': true,
+                'orderBy': 'startTime'
+            }).then(response => {
+                const events = response.result.items;
+                const eventsList = document.getElementById('events');
+                eventsList.innerHTML = '';
+
+                if (events.length > 0) {
+                    events.forEach(event => {
+                        const li = document.createElement('li');
+                        const eventTime = new Date(event.start.dateTime || event.start.date);
+                        const localTime = new Intl.DateTimeFormat(navigator.language, {
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
+                        }).format(eventTime);
+                        li.innerHTML = `<strong>${event.summary}</strong> - ⏰ ${localTime}`;
+                        eventsList.appendChild(li);
+                    });
+                } else {
+                    eventsList.innerHTML = '<li>No Events Today</li>';
+                }
+            }).catch(error => {
+                console.error("Error fetching events:", error);
+            });
+        }
+
+        document.addEventListener("DOMContentLoaded", function () {
+            const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            document.getElementById("calendarFrame").src = 
+                `https://calendar.google.com/calendar/embed?src=${CALENDAR_ID}&ctz=${encodeURIComponent(userTimezone)}`;
         });
+
+        // ⚡ Efek Listrik
+        const canvas = document.getElementById("lightningCanvas");
+        const ctx = canvas.getContext("2d");
+        canvas.width = window.innerWidth;
+        canvas.height = window.innerHeight;
+
+        function drawLightning(x, y, endX, endY) {
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            ctx.lineTo(endX, endY);
+            ctx.strokeStyle = `rgba(0, 162, 255, ${Math.random() * 0.5 + 0.5})`;
+            ctx.lineWidth = 2 + Math.random() * 3;
+            ctx.shadowColor = "cyan";
+            ctx.shadowBlur = 10;
+            ctx.stroke();
+        }
+
+        function animateLightning() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            const startX = Math.random() * canvas.width;
+            drawLightning(startX, 0, startX + Math.random() * 200 - 100, canvas.height);
+            setTimeout(animateLightning, Math.random() * 1000 + 500);
+        }
+
+        animateLightning();
     </script>
+
 </body>
 </html>
