@@ -6,7 +6,7 @@
     <title>🔥 Fogo Events 🔥</title>
 
     <style>
-        /* 🔥 Background Bergerak */
+        /* 🔥 Background Bergerak Lebih Smooth */
         @keyframes fireEffect {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
@@ -14,9 +14,9 @@
         }
 
         body {
-            background: linear-gradient(-45deg, #0a0a0a, #441500, #ff4500, #0a0a0a);
-            background-size: 300% 300%;
-            animation: fireEffect 10s infinite linear;
+            background: linear-gradient(-45deg, #0a0a0a, #290f0f, #662200, #0a0a0a);
+            background-size: 400% 400%;
+            animation: fireEffect 12s infinite linear;
             color: white;
             font-family: 'Poppins', sans-serif;
             margin: 0;
@@ -121,8 +121,8 @@
 
     <script defer src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
     <script>
-          const API_KEY = 'AIzaSyDjVXwUbLWZv052kRzAXmjvxEWTGuY7BLw'; 
-        const CALENDAR_ID = '287026a99cb10f73790c5dbcebfc76a12e564079e02f3b3be161b752b7d78f56@group.calendar.google.com'; 
+        const API_KEY = 'AIzaSyDjVXwUbLWZv052kRzAXmjvxEWTGuY7BLw';
+        const CALENDAR_ID = '287026a99cb10f73790c5dbcebfc76a12e564079e02f3b3be161b752b7d78f56@group.calendar.google.com';
 
         function gapiLoaded() {
             gapi.load('client', loadClient);
@@ -164,6 +164,8 @@
                         if (index < 3) li.classList.add('show');
                         eventsList.appendChild(li);
                     });
+
+                    document.getElementById('showMore').style.display = 'inline-block';
                 } else {
                     eventsList.innerHTML = '<li class="show">No Events Today</li>';
                 }
@@ -180,18 +182,23 @@
             const todayTitle = document.getElementById("todayTitle");
             todayTitle.innerHTML = `🔥 Fogo Events - ${formattedDate} 🔥`;
 
-            function getRandomFireColor() {
-                const colors = ["#ff4500", "#ff7700", "#ff9900", "#ff5e00", "#ff6a00"];
-                return colors[Math.floor(Math.random() * colors.length)];
-            }
-
-            const randomColor = getRandomFireColor();
-            todayTitle.style.color = randomColor;
-            todayTitle.style.textShadow = `0 0 15px ${randomColor}, 0 0 25px ${randomColor}`;
-
             const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
             document.getElementById("calendarFrame").src = 
                 `https://calendar.google.com/calendar/embed?src=${CALENDAR_ID}&ctz=${encodeURIComponent(userTimezone)}`;
+
+            document.getElementById("showMore").addEventListener("click", function () {
+                document.querySelectorAll("#events li").forEach(li => li.classList.add('show'));
+                document.getElementById("showMore").style.display = "none";
+                document.getElementById("showLess").style.display = "inline-block";
+            });
+
+            document.getElementById("showLess").addEventListener("click", function () {
+                document.querySelectorAll("#events li").forEach((li, index) => {
+                    if (index >= 3) li.classList.remove('show');
+                });
+                document.getElementById("showMore").style.display = "inline-block";
+                document.getElementById("showLess").style.display = "none";
+            });
         });
     </script>
 </head>
@@ -202,7 +209,7 @@
     <h2 id="eventsTitle">Today's Events</h2>
     <div id="eventsContainer">
         <ul id="events">Loading events...</ul>
-        <span id="showMore">Lihat Semua</span>
+        <span id="showMore" style="display: none;">Lihat Semua</span>
         <span id="showLess" style="display: none;">Sembunyikan</span>
     </div>
 
