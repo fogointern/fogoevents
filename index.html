@@ -6,7 +6,7 @@
     <title>🔥 Fogo Events 🔥</title>
 
     <style>
-        /* 🔥 Background Bergerak Lebih Smooth */
+        /* 🔥 Efek Background Bergerak */
         @keyframes fireEffect {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
@@ -22,17 +22,9 @@
             margin: 0;
             padding: 0;
             text-align: center;
-            opacity: 0;
-            animation: fadeIn 1.5s ease-in-out forwards;
         }
 
-        /* 🔥 Efek Fade-in */
-        @keyframes fadeIn {
-            0% { opacity: 0; }
-            100% { opacity: 1; }
-        }
-
-        /* 🔥 Efek Glow Neon di Judul */
+        /* 🔥 Judul Fogo Events */
         @keyframes fireGlow {
             0% { text-shadow: 0 0 10px var(--neonColor), 0 0 20px var(--neonColor); }
             50% { text-shadow: 0 0 15px #ff4500, 0 0 30px #ff7700; }
@@ -47,9 +39,10 @@
             text-transform: uppercase;
             letter-spacing: 2px;
             color: var(--neonColor);
+            transition: color 1s ease-in-out;
         }
 
-        /* 🔥 List Events */
+        /* 🔥 Container Events */
         #eventsContainer {
             margin: auto;
             width: 90%;
@@ -66,15 +59,18 @@
         }
 
         #events li {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: bold;
-            padding: 10px;
+            padding: 12px;
             margin: 10px auto;
             background: linear-gradient(90deg, #220b05, #ff4500, #ff7700);
             color: white;
             border-radius: 10px;
             text-align: center;
-            transition: transform 0.4s ease-in-out, box-shadow 0.4s ease-in-out;
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
         }
 
         #events li:hover {
@@ -82,7 +78,7 @@
             box-shadow: 0px 0px 20px rgba(255, 140, 0, 1);
         }
 
-        /* 🔥 Tombol */
+        /* 🔥 Tombol Tampilkan & Sembunyikan */
         .toggle-btn {
             margin-top: 10px;
             padding: 8px 15px;
@@ -92,10 +88,12 @@
             border-radius: 5px;
             font-size: 16px;
             cursor: pointer;
+            transition: background 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
         }
 
         .toggle-btn:hover {
             background: #ff7700;
+            box-shadow: 0px 0px 10px rgba(255, 140, 0, 0.7);
         }
 
         /* 🔥 Calendar Frame */
@@ -121,6 +119,8 @@
         const API_KEY = 'AIzaSyDjVXwUbLWZv052kRzAXmjvxEWTGuY7BLw'; 
         const CALENDAR_ID = '287026a99cb10f73790c5dbcebfc76a12e564079e02f3b3be161b752b7d78f56@group.calendar.google.com'; 
 
+        let showAll = false; // Status apakah semua event ditampilkan
+
         function gapiLoaded() {
             gapi.load('client', loadClient);
         }
@@ -134,7 +134,6 @@
 
         function getEvents() {
             const now = new Date();
-            const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
             const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0).toISOString();
             const todayEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59).toISOString();
 
@@ -156,20 +155,35 @@
                 });
 
                 if (upcomingEvents.length > 0) {
-                    upcomingEvents.forEach(event => {
+                    upcomingEvents.forEach((event, index) => {
                         const li = document.createElement('li');
                         const eventTime = new Date(event.start.dateTime || event.start.date);
                         const localTime = eventTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-                        li.innerHTML = `<strong>${event.summary}</strong> - ⏰ ${localTime}`;
+                        li.innerHTML = `<span>${event.summary}</span> <span>⏰ ${localTime}</span>`;
+                        if (!showAll && index >= 3) li.style.display = 'none'; // Hanya tampilkan 3 pertama kalau tidak showAll
                         eventsList.appendChild(li);
                     });
+
+                    document.getElementById('toggleButton').style.display = 'inline-block';
                 } else {
                     eventsList.innerHTML = '<li>No Upcoming Events</li>';
+                    document.getElementById('toggleButton').style.display = 'none';
                 }
             }).catch(error => {
                 console.error("Error fetching events:", error);
             });
+        }
+
+        function toggleEvents() {
+            showAll = !showAll;
+            const eventItems = document.querySelectorAll('#events li');
+
+            eventItems.forEach((item, index) => {
+                item.style.display = showAll || index < 3 ? 'flex' : 'none';
+            });
+
+            document.getElementById('toggleButton').innerText = showAll ? 'Sembunyikan' : 'Tampilkan Semua';
         }
 
         document.addEventListener("DOMContentLoaded", function () {
@@ -184,11 +198,6 @@
 
             // 🔥 Update Judul H1
             document.getElementById("todayTitle").innerHTML = `🔥 Fogo Events - ${formattedDate} 🔥`;
-
-            // 🔥 Update Calendar sesuai timezone user
-            const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-            document.getElementById("calendarFrame").src = 
-                `https://calendar.google.com/calendar/embed?src=${CALENDAR_ID}&ctz=${encodeURIComponent(userTimezone)}`;
         });
     </script>
 </head>
@@ -199,6 +208,7 @@
     <h2>Today's Events</h2>
     <div id="eventsContainer">
         <ul id="events">Loading events...</ul>
+        <button id="toggleButton" class="toggle-btn" onclick="toggleEvents()" style="display: none;">Tampilkan Semua</button>
     </div>
 
     <h2>Calendar</h2>
