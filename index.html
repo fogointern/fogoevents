@@ -31,14 +31,14 @@
     100% { background-position: 0% 50%; opacity: 0.9; }
 }
 
-/* 🔥 Efek Glow Lebih Smooth */
-@keyframes fireGlow {
-    0% { text-shadow: 0 0 5px #ff4500, 0 0 10px #ff5733, 0 0 15px #ff7700; }
-    50% { text-shadow: 0 0 10px #ff5733, 0 0 20px #ff7700, 0 0 30px #ff9900; }
-    100% { text-shadow: 0 0 5px #ff4500, 0 0 10px #ff5733, 0 0 15px #ff7700; }
+/* 🔥 Animasi Glow Neon */
+@keyframes neonGlow {
+    0% { text-shadow: 0 0 5px var(--neon-color1), 0 0 10px var(--neon-color2), 0 0 15px var(--neon-color3); }
+    50% { text-shadow: 0 0 10px var(--neon-color2), 0 0 20px var(--neon-color3), 0 0 30px var(--neon-color1); }
+    100% { text-shadow: 0 0 5px var(--neon-color1), 0 0 10px var(--neon-color2), 0 0 15px var(--neon-color3); }
 }
 
-/* 🔥 Styling H1 agar lebih jelas dan smooth */
+/* 🔥 H1 dengan Neon Effect */
 #todayTitle {
     font-size: 52px;
     font-weight: 900;
@@ -46,19 +46,9 @@
     letter-spacing: 4px;
     padding: 20px;
     text-align: center;
-    background: linear-gradient(90deg, #ff4500, #ff5733, #ff9900);
-    background-size: 300% 300%;
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
-    position: relative;
-    animation: fireText 3s infinite alternate, fireGlow 2s infinite alternate;
-}
-
-/* 🔥 Efek Hover Lebih Halus */
-#todayTitle:hover {
-    transform: scale(1.05);
-    transition: transform 0.4s ease-in-out;
-    text-shadow: 0 0 15px rgba(255, 69, 0, 1), 0 0 25px rgba(255, 140, 0, 1);
+    color: var(--neon-color1);
+    animation: neonGlow 2s infinite alternate;
+    transition: color 0.3s ease-in-out;
 }
 
     /* 🔥 Efek Neon yang Lebih Keren untuk H2 */
@@ -232,9 +222,18 @@
         const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
         const formattedDate = today.toLocaleDateString('en-US', options);
 
-        // Array warna acak untuk H1
-        const colors = ["#FF5733", "#FFC300", "#DAF7A6", "#C70039", "#581845"];
-        const randomColor = colors[Math.floor(Math.random() * colors.length)];
+        const neonColors = [
+            ["#FF5733", "#FFC300", "#DAF7A6"], // Merah ke kuning
+            ["#FF0000", "#FF7300", "#FFEA00"], // Merah ke emas
+            ["#D400FF", "#9400D3", "#4B0082"], // Ungu ke biru
+            ["#0099FF", "#00CCFF", "#00FFFF"], // Biru neon
+            ["#33FF57", "#57FF33", "#99FF00"]  // Hijau neon
+        ];
+
+        const randomNeon = neonColors[Math.floor(Math.random() * neonColors.length)];
+        document.documentElement.style.setProperty('--neon-color1', randomNeon[0]);
+        document.documentElement.style.setProperty('--neon-color2', randomNeon[1]);
+        document.documentElement.style.setProperty('--neon-color3', randomNeon[2]);
 
         // Set teks dan warna H1
         const todayTitle = document.getElementById("todayTitle");
