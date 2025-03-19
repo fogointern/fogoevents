@@ -6,15 +6,15 @@
     <title>⚡ Fogo Events ⚡</title>
 
     <style>
-        /* 🔥 Background bergerak smooth (Orange Soft - Merah - Hitam) */
-        @keyframes smoothFireBackground {
+        /* 🔥 Background API BERGERAK (Efek Pulsing) */
+        @keyframes fireAnimation {
             0% { background: #0a0a0a; }
-            50% { background: #332015; } /* Orange yang lebih soft */
+            50% { background: #332015; } /* Orange lebih soft */
             100% { background: #661a00; }
         }
 
         body {
-            animation: smoothFireBackground 15s infinite alternate ease-in-out;
+            animation: fireAnimation 10s infinite alternate ease-in-out;
             color: white;
             font-family: 'Poppins', sans-serif;
             margin: 0;
@@ -22,34 +22,36 @@
             text-align: center;
         }
 
-        /* 🔥 Efek Glow Neon untuk Judul */
+        /* 🔥 Efek Neon Glow Lebih Lembut */
         @keyframes neonGlow {
-            0% { text-shadow: 0 0 15px #ff4500, 0 0 30px #ff7700; }
-            50% { text-shadow: 0 0 20px #ff7700, 0 0 40px #ff9900; }
-            100% { text-shadow: 0 0 15px #ff4500, 0 0 30px #ff7700; }
+            0% { text-shadow: 0 0 15px #ff4500, 0 0 25px #ff7700; }
+            50% { text-shadow: 0 0 20px #ff7700, 0 0 30px #ff9900; }
+            100% { text-shadow: 0 0 15px #ff4500, 0 0 25px #ff7700; }
         }
 
         #todayTitle {
-            font-size: 42px;
+            font-size: 45px;
             font-weight: bold;
             padding: 20px;
             border-radius: 10px;
             animation: neonGlow 2s infinite alternate;
-            color: #ff9900;
+            color: #ffcc00;
             text-transform: uppercase;
-            letter-spacing: 2px;
+            letter-spacing: 3px;
         }
 
-        /* 🔥 Teks Event dan Calendar */
-        #eventsTitle, #calendarTitle {
-            font-size: 26px;
-            font-weight: 600;
-            color: #FFD700;
-            margin-top: 20px;
-            text-transform: uppercase;
+        /* 🔥 Efek Glassmorphism Kalender */
+        #calendarFrame {
+            width: 90%;
+            height: 600px;
+            border-radius: 15px;
+            padding: 5px;
+            box-shadow: 0px 0px 40px rgba(255, 69, 0, 0.5); /* Glow */
+            backdrop-filter: blur(10px); /* Efek kaca */
+            border: 1px solid rgba(255, 140, 0, 0.2); /* Garis tipis */
         }
 
-        /* 🔥 Kotak List Event lebih keren & smooth */
+        /* 🔥 Event List Neon dengan Hover */
         #events {
             list-style-type: none;
             padding: 0;
@@ -59,30 +61,33 @@
             font-size: 22px;
             font-weight: bold;
             padding: 15px;
-            margin: 10px auto;
+            margin: 15px auto;
             background: linear-gradient(90deg, #220b05, #ff5500, #ff9900);
             color: white;
             border-radius: 15px;
             max-width: 600px;
             text-align: center;
-            border: 2px solid #FFD700;
-            box-shadow: 0px 0px 15px rgba(255, 140, 0, 0.6);
-            transition: transform 0.4s ease-in-out, box-shadow 0.4s ease-in-out;
+            border: 2px solid rgba(255, 204, 0, 0.8);
+            box-shadow: 0px 5px 20px rgba(255, 140, 0, 0.5);
+            transition: all 0.3s ease-in-out;
         }
 
-        /* 🔥 Hover Efek */
+        /* 🔥 Hover dengan Efek 3D */
         #events li:hover {
-            transform: scale(1.05);
+            transform: scale(1.07);
             background: linear-gradient(90deg, #440b05, #ff7700, #ffaa00);
-            box-shadow: 0px 0px 25px rgba(255, 140, 0, 1);
+            box-shadow: 0px 10px 30px rgba(255, 140, 0, 1);
         }
 
-        /* 🔥 Frame Kalender dengan Shadow Glow */
-        #calendarFrame {
-            border-radius: 15px;
-            padding: 5px;
-            box-shadow: 0px 0px 40px rgba(255, 69, 0, 0.5); /* Efek shadow glowing */
+        /* 🔥 Title Event & Calendar */
+        #eventsTitle, #calendarTitle {
+            font-size: 26px;
+            font-weight: 600;
+            color: #FFD700;
+            margin-top: 20px;
+            text-transform: uppercase;
         }
+
     </style>
 
     <script defer src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
@@ -142,7 +147,7 @@
 </head>
 <body>
 
-    <!-- 🔥 Judul dengan tanggal -->
+    <!-- 🔥 Judul dengan efek neon -->
     <h1 id="todayTitle">⚡ Fogo Events ⚡</h1>
 
     <!-- 🔥 Event Hari Ini -->
@@ -151,19 +156,17 @@
 
     <!-- 🔥 Google Calendar -->
     <h2 id="calendarTitle"> Calendar </h2>
-    <iframe id="calendarFrame" width="90%" height="600" frameborder="0" scrolling="no"></iframe>
+    <iframe id="calendarFrame" frameborder="0" scrolling="no"></iframe>
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const today = new Date();
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            const formattedDate = today.toLocaleDateString('en-US', options);
+            const formattedDate = today.toLocaleDateString('en-US', { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' });
 
             document.getElementById("todayTitle").innerHTML = `⚡ Fogo Events - ${formattedDate} ⚡`;
 
             const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-            document.getElementById("calendarFrame").src = 
-                `https://calendar.google.com/calendar/embed?src=${CALENDAR_ID}&ctz=${encodeURIComponent(userTimezone)}`;
+            document.getElementById("calendarFrame").src = `https://calendar.google.com/calendar/embed?src=${CALENDAR_ID}&ctz=${encodeURIComponent(userTimezone)}`;
         });
     </script>
 
