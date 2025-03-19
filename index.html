@@ -3,93 +3,120 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🔥 Fogo Events - Brutal Elegan 🔥</title>
+    <title>🔥 Fogo Events 🔥</title>
+    
+    <!-- 🔥 Font API dari Google -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@500&display=swap" rel="stylesheet">
 
     <style>
-        /* 🔥 Background Bergerak (Lava & Api Mengamuk) */
-        @keyframes fireBackground {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
-
+        /* 🔥 Background Brutal dengan Efek Api */
         body {
-            background: linear-gradient(45deg, #000000, #550000, #ff0000);
-            background-size: 300% 300%;
-            animation: fireBackground 8s infinite alternate;
-            color: white;
-            font-family: 'Poppins', sans-serif;
             margin: 0;
             padding: 0;
+            width: 100%;
+            height: 100vh;
+            background: black;
+            font-family: 'Orbitron', sans-serif;
+            color: white;
             text-align: center;
+            position: relative;
+            overflow: hidden;
         }
 
-        /* 🔥 Efek Cahaya Mewah & Glitch untuk Judul */
-        @keyframes glow {
-            0% { text-shadow: 0 0 15px #ff0000, 0 0 25px #ff3300, 0 0 40px #ff6600; }
-            50% { text-shadow: 0 0 20px #ff3300, 0 0 35px #ff6600, 0 0 50px #ffaa00; }
-            100% { text-shadow: 0 0 15px #ff0000, 0 0 25px #ff3300, 0 0 40px #ff6600; }
-        }
-
+        /* 🔥 Styling untuk Judul (Tanggal Hari Ini) */
         #todayTitle {
-            font-size: 42px;
+            font-size: 50px;
             font-weight: bold;
+            text-transform: uppercase;
+            text-align: center;
+            display: inline-block;
             padding: 20px;
-            border-radius: 10px;
-            animation: glow 2s infinite alternate;
-            color: #ffd700;
-            text-transform: uppercase;
-            letter-spacing: 2px;
+            border-radius: 15px;
+            background: rgba(0, 0, 0, 0.8);
+            box-shadow: 0px 5px 15px rgba(255, 69, 0, 1);
+            animation: flicker 1.5s infinite alternate, glitch 1s infinite alternate;
         }
 
-        #eventsTitle {
-            font-size: 30px;
-            font-weight: bold;
-            color: #ffcc00;
-            margin-top: 20px;
-            text-transform: uppercase;
+        /* 🔥 Efek Flicker Api */
+        @keyframes flicker {
+            0% { text-shadow: 0 0 20px red, 0 0 40px orange; }
+            50% { text-shadow: 0 0 30px yellow, 0 0 50px red; }
+            100% { text-shadow: 0 0 25px orange, 0 0 45px red; }
         }
 
-        /* 🔥 Event List Brutal */
+        /* ⚡ Efek Glitch */
+        @keyframes glitch {
+            0% { transform: translate(0, 0); }
+            20% { transform: translate(-3px, 3px); }
+            40% { transform: translate(3px, -3px); }
+            60% { transform: translate(-3px, 3px); }
+            80% { transform: translate(3px, -3px); }
+            100% { transform: translate(0, 0); }
+        }
+
+        /* 🔥 Kotak Event */
         #events {
-            list-style-type: none;
+            list-style: none;
             padding: 0;
+            margin: 20px auto;
+            width: 60%;
         }
 
         #events li {
-            font-size: 22px;
-            font-weight: bold;
+            background: rgba(0, 0, 0, 0.8);
             padding: 15px;
             margin: 10px auto;
-            background: linear-gradient(90deg, #330000, #ff2200, #ff6600);
-            color: white;
-            border-radius: 15px;
-            max-width: 600px;
-            text-align: center;
-            border: 3px solid #ffcc00;
-            box-shadow: 0px 0px 30px rgba(255, 0, 0, 0.8);
-            transition: transform 0.4s ease-in-out, box-shadow 0.4s ease-in-out;
+            border-radius: 10px;
+            font-size: 22px;
+            text-transform: uppercase;
+            text-shadow: 0 0 15px orange, 0 0 25px red;
+            box-shadow: 0px 4px 10px rgba(255, 69, 0, 0.8);
+            animation: glitch 1s infinite alternate;
         }
 
-        /* 🔥 Hover dengan Efek Bara Api */
-        @keyframes flameHover {
-            0% { background: linear-gradient(90deg, #330000, #ff2200, #ff6600); }
-            50% { background: linear-gradient(90deg, #440000, #ff3300, #ffaa00); }
-            100% { background: linear-gradient(90deg, #330000, #ff2200, #ff6600); }
+        /* 🔥 Google Calendar */
+        iframe {
+            width: 90%;
+            height: 700px;
+            border-radius: 10px;
+            box-shadow: 0px 5px 20px rgba(255, 69, 0, 0.9);
+            background: rgba(0, 0, 0, 0.8);
         }
 
-        #events li:hover {
-            transform: scale(1.1);
-            animation: flameHover 1s infinite alternate;
-            box-shadow: 0px 0px 40px rgba(255, 69, 0, 1);
-            border-color: #ffd700;
+        /* 🔥 Footer */
+        #footer {
+            margin-top: 30px;
+            font-size: 18px;
+            font-weight: bold;
+            background: rgba(0, 0, 0, 0.8);
+            padding: 15px;
+            border-radius: 10px;
+            display: inline-block;
+            box-shadow: 0px 4px 15px rgba(255, 69, 0, 0.7);
         }
     </style>
+</head>
+<body>
+
+    <!-- 🔥 Judul (Tanggal Hari Ini) -->
+    <h1 id="todayTitle"></h1>
+
+    <!-- 🔥 Event Hari Ini -->
+    <h2>🔥 Events Today 🔥</h2>
+    <ul id="events">Loading events...</ul>
+
+    <!-- 🔥 Google Calendar -->
+    <h2>🔥 Full Calendar 🔥</h2>
+    <iframe id="calendarFrame" frameborder="0" scrolling="no"></iframe>
+
+    <!-- 🔥 Footer -->
+    <div id="footer">Made with ❤️ by Intern</div>
 
     <script defer src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
     <script>
         const API_KEY = 'AIzaSyDjVXwUbLWZv052kRzAXmjvxEWTGuY7BLw'; 
         const CALENDAR_ID = '287026a99cb10f73790c5dbcebfc76a12e564079e02f3b3be161b752b7d78f56@group.calendar.google.com'; 
+
 
         function gapiLoaded() {
             gapi.load('client', loadClient);
@@ -103,65 +130,51 @@
         }
 
         function getEvents() {
-            const todayStart = new Date().setHours(0, 0, 0, 0);
-            const todayEnd = new Date().setHours(23, 59, 59, 999);
+            const now = new Date();
+            const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            const todayStart = new Date().toISOString();
+            const todayEnd = new Date(now.setHours(23, 59, 59, 999)).toISOString();
 
-            gapi.client.calendar.events.list({
-                'calendarId': CALENDAR_ID,
-                'timeMin': new Date(todayStart).toISOString(),
-                'timeMax': new Date(todayEnd).toISOString(),
-                'showDeleted': false,
-                'singleEvents': true,
-                'orderBy': 'startTime'
-            }).then(response => {
-                const events = response.result.items;
-                const eventsList = document.getElementById('events');
-                eventsList.innerHTML = '';
+            fetch(`https://www.googleapis.com/calendar/v3/calendars/${CALENDAR_ID}/events?key=${API_KEY}&timeMin=${todayStart}&timeMax=${todayEnd}&singleEvents=true&orderBy=startTime`)
+                .then(response => response.json())
+                .then(data => {
+                    const eventsList = document.getElementById('events');
+                    eventsList.innerHTML = '';
 
-                if (events.length > 0) {
-                    events.forEach(event => {
-                        const li = document.createElement('li');
+                    if (data.items && data.items.length > 0) {
+                        data.items.forEach(event => {
+                            const eventTime = new Date(event.start.dateTime || event.start.date);
+                            const localTime = new Intl.DateTimeFormat(navigator.language, {
+                                hour: '2-digit',
+                                minute: '2-digit',
+                                timeZone: userTimezone
+                            }).format(eventTime);
 
-                        const eventTime = new Date(event.start.dateTime || event.start.date);
-                        const localTime = new Intl.DateTimeFormat(navigator.language, {
-                            hour: '2-digit',
-                            minute: '2-digit',
-                            timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
-                        }).format(eventTime);
-
-                        li.innerHTML = `<strong>${event.summary}</strong> - ⏰ ${localTime}`;
-                        eventsList.appendChild(li);
-                    });
-                } else {
-                    eventsList.innerHTML = '<li>No Events Today</li>';
-                }
-            }).catch(error => {
-                console.error("Error fetching events:", error);
-            });
+                            const li = document.createElement('li');
+                            li.innerHTML = `<strong>${event.summary}</strong> - ⏰ ${localTime}`;
+                            eventsList.appendChild(li);
+                        });
+                    } else {
+                        eventsList.innerHTML = '<li>No Events Today</li>';
+                    }
+                })
+                .catch(error => console.error("Error fetching events:", error));
         }
-    </script>
-</head>
-<body>
 
-    <!-- 🔥 Judul dengan tanggal -->
-    <h1 id="todayTitle">🔥  🔥</h1>
-
-    <!-- 🔥 Event Hari Ini -->
-    <h2 id="eventsTitle"> Today’s Events </h2>
-    <ul id="events">Loading events...</ul>
-
-    <!-- 🔥 Google Calendar -->
-    <h2 style="text-align: center; font-size: 24px; font-weight: bold; color: #ffcc00;">🔥 Calendar 🔥</h2>
-    <iframe id="calendarFrame" style="border: 0" width="100%" height="600" frameborder="0" scrolling="no"></iframe>
-
-    <script>
         document.addEventListener("DOMContentLoaded", function () {
+            const todayTitle = document.getElementById("todayTitle");
+
+            // 🔥 Warna Acak
+            const colors = ["#FF5733", "#33FF57", "#3357FF", "#FF33A8", "#F39C12", "#FF4500", "#FFD700"];
+            const randomColor = colors[Math.floor(Math.random() * colors.length)];
+            todayTitle.style.color = randomColor;
+
+            // 🔥 Set Tanggal Otomatis
             const today = new Date();
             const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            const formattedDate = today.toLocaleDateString('en-US', options);
+            todayTitle.innerHTML = `🔥 ${today.toLocaleDateString('en-US', options)} 🔥`;
 
-            document.getElementById("todayTitle").innerHTML = `🔥 Fogo Events - ${formattedDate} 🔥`;
-
+            // 🔥 Set Timezone di Google Calendar
             const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
             document.getElementById("calendarFrame").src = 
                 `https://calendar.google.com/calendar/embed?src=${CALENDAR_ID}&ctz=${encodeURIComponent(userTimezone)}`;
