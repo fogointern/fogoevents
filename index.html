@@ -184,7 +184,7 @@
                         timeZone: userTimezone
                     }).format(eventTime);
 
-                    li.innerHTML = `🔥 <strong>${event.summary}</strong> - ⏰ ${localTime}`;
+                    li.innerHTML = ` <strong>${event.summary}</strong> - ⏰ ${localTime}`;
                     if (count < 3) li.classList.add('show');
                     eventsList.appendChild(li);
                     count++;
