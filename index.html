@@ -3,30 +3,34 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚡🔥 Fogo Events - Neon Fire 🔥⚡</title>
-
+    <title>🔥 Fogo Events - Neon Fire 🔥</title>
+    
     <style>
-        /* 🔥 Background Bergerak dengan Efek Api & Lighting */
+        /* 🔥 Background Bergerak dengan Efek Lighting */
         @keyframes fireBackground {
-            0% { background-position: 0% 50%; filter: brightness(1); }
-            50% { background-position: 100% 50%; filter: brightness(1.2); }
-            100% { background-position: 0% 50%; filter: brightness(1); }
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+        
+        @keyframes flicker {
+            0%, 100% { opacity: 0.8; }
+            50% { opacity: 1; }
         }
 
         body {
-            background: linear-gradient(45deg, #0a0a0a, #1a0a05, #441500);
-            background-size: 300% 300%;
-            animation: fireBackground 8s infinite alternate ease-in-out;
+            background: linear-gradient(45deg, #0a0a0a, #1a0a05, #441500, #ff5500);
+            background-size: 400% 400%;
+            animation: fireBackground 10s infinite alternate ease-in-out, flicker 3s infinite;
             color: white;
             font-family: 'Poppins', sans-serif;
             margin: 0;
             padding: 0;
             text-align: center;
-            overflow-x: hidden;
             scroll-behavior: smooth;
         }
 
-        /* 🔥 Efek Neon Elegan untuk Judul */
+        /* 🔥 Efek Neon untuk H1 */
         @keyframes neonGlow {
             0% { text-shadow: 0 0 10px #ff4500, 0 0 20px #ff5733, 0 0 30px #ff7700; }
             50% { text-shadow: 0 0 15px #ff5733, 0 0 25px #ff7700, 0 0 35px #ff9900; }
@@ -42,22 +46,21 @@
             color: #ff9900;
             text-transform: uppercase;
             letter-spacing: 2px;
+            opacity: 0;
+            animation: neonGlow 2s infinite alternate, fadeIn 1.5s ease-in-out forwards;
         }
 
-        /* 🔥 Judul Kecil Neon Soft */
-        #eventsTitle, #calendarTitle {
-            font-size: 24px;
-            font-weight: bold;
-            margin-top: 20px;
-            text-transform: uppercase;
-            color: #ffcc55;
-            text-shadow: 0 0 5px rgba(255, 204, 85, 0.8);
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
-        /* 🔥 Event List dengan Hover Glow */
+        /* 🔥 Event List Neon */
         #events {
             list-style-type: none;
             padding: 0;
+            opacity: 0;
+            animation: fadeIn 1.5s ease-in-out forwards;
         }
 
         #events li {
@@ -75,47 +78,48 @@
             transition: transform 0.4s ease-in-out, box-shadow 0.4s ease-in-out;
         }
 
-        /* 🔥 Hover dengan Efek Fade Glow */
-        @keyframes flameHover {
-            0% { background: linear-gradient(90deg, #330b05, #ff5500, #ffaa00); }
-            50% { background: linear-gradient(90deg, #440b05, #ff6600, #ffbb00); }
-            100% { background: linear-gradient(90deg, #330b05, #ff5500, #ffaa00); }
-        }
-
+        /* 🔥 Hover Efek Glow */
         #events li:hover {
-            transform: scale(1.1);
-            animation: flameHover 1s infinite alternate;
+            transform: scale(1.05);
             box-shadow: 0px 0px 40px rgba(255, 140, 0, 1);
             border-color: #ffd700;
         }
 
-        /* 🔥 Frame Calendar Smooth Shadow */
+        /* 🔥 Frame Kalender Lebih Smooth */
         #calendarFrame {
-            border-radius: 10px;
-            box-shadow: 0px 0px 30px rgba(255, 100, 0, 0.7);
-            border: none;
-            width: 90%;
-            height: 600px;
-            margin-top: 20px;
+            border-radius: 15px;
+            box-shadow: 0px 0px 30px rgba(255, 69, 0, 0.6);
         }
 
-        /* 🔥 Footer */
+        /* 🔥 Tombol Refresh Events */
+        #refreshBtn {
+            background: linear-gradient(90deg, #ff4500, #ff7700);
+            color: white;
+            font-size: 18px;
+            border: none;
+            padding: 10px 20px;
+            margin-top: 10px;
+            cursor: pointer;
+            border-radius: 8px;
+            transition: 0.3s;
+        }
+
+        #refreshBtn:hover {
+            background: linear-gradient(90deg, #ff7700, #ffaa00);
+        }
+
+        /* 🔥 Made with Love */
         #footer {
-            text-align: center;
             font-size: 14px;
-            padding: 15px;
-            color: #ff8800;
-            text-shadow: 0 0 5px #ff4400, 0 0 10px #ff6600;
-            background: rgba(0, 0, 0, 0.8);
-            border-top: 2px solid #ff6600;
             margin-top: 20px;
+            opacity: 0.8;
         }
     </style>
 
     <script defer src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
     <script>
-         const API_KEY = 'AIzaSyDjVXwUbLWZv052kRzAXmjvxEWTGuY7BLw'; 
-        const CALENDAR_ID = '287026a99cb10f73790c5dbcebfc76a12e564079e02f3b3be161b752b7d78f56@group.calendar.google.com'; 
+        const API_KEY = 'YOUR_API_KEY_HERE'; 
+        const CALENDAR_ID = 'YOUR_CALENDAR_ID_HERE';
 
         function gapiLoaded() {
             gapi.load('client', loadClient);
@@ -161,26 +165,27 @@
                 } else {
                     eventsList.innerHTML = '<li>No Events Today</li>';
                 }
-            }).catch(error => {
-                console.error("Error fetching events:", error);
-            });
+            }).catch(error => console.error("Error fetching events:", error));
         }
     </script>
 </head>
 <body>
 
-    <h1 id="todayTitle">⚡🔥 Fogo Events 🔥⚡</h1>
+    <!-- 🔥 Judul dengan Tanggal -->
+    <h1 id="todayTitle">⚡ Fogo Events - <span id="currentDate"></span> 🔥</h1>
 
-    <h2 id="eventsTitle">Today's Events</h2>
+    <!-- 🔥 Event Hari Ini -->
+    <h2>Today's Events</h2>
     <ul id="events">Loading events...</ul>
+    <button id="refreshBtn" onclick="getEvents()">🔄 Refresh Events</button>
 
-    <h2 id="calendarTitle">🔥 Event Calendar 🔥</h2>
-    <iframe id="calendarFrame"></iframe>
+    <!-- 🔥 Google Calendar -->
+    <iframe id="calendarFrame" width="90%" height="600"></iframe>
 
-    <footer id="footer">❤️ Made with Love by Intern ❤️</footer>
+    <p id="footer">🔥 Made with love by Intern 🔥</p>
 
     <script>
-        document.getElementById("calendarFrame").src = `https://calendar.google.com/calendar/embed?src=${CALENDAR_ID}&ctz=${encodeURIComponent(Intl.DateTimeFormat().resolvedOptions().timeZone)}`;
+        document.getElementById("currentDate").innerText = new Date().toLocaleDateString();
     </script>
 
 </body>
