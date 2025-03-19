@@ -123,18 +123,13 @@
             }).then(() => getEvents());
         }
 
-        function getEvents() {
+       function getEvents() {
     const now = new Date();
     const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-    // Set waktu awal dan akhir untuk hari ini berdasarkan timezone
-    const startOfDay = new Date(now.setHours(0, 0, 0, 0)).toISOString();
-    const endOfDay = new Date(now.setHours(23, 59, 59, 999)).toISOString();
-
     gapi.client.calendar.events.list({
         'calendarId': CALENDAR_ID,
-        'timeMin': startOfDay,
-        'timeMax': endOfDay,  // Hanya event hingga akhir hari ini
+        'timeMin': now.toISOString(), // Mulai dari waktu sekarang
         'showDeleted': false,
         'singleEvents': true,
         'orderBy': 'startTime'
@@ -144,23 +139,38 @@
         eventsList.innerHTML = '';
 
         if (events.length > 0) {
-            events.forEach((event, index) => {
-                const li = document.createElement('li');
-                const eventTime = new Date(event.start.dateTime || event.start.date);
-                
-                // Format waktu lokal
-                const localTime = new Intl.DateTimeFormat(navigator.language, {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    timeZone: userTimezone
-                }).format(eventTime);
+            const today = new Date();
+            today.setHours(0, 0, 0, 0); // Set ke awal hari
 
-                li.innerHTML = `🔥 <strong>${event.summary}</strong> - ⏰ ${localTime}`;
-                if (index < 3) li.classList.add('show');
-                eventsList.appendChild(li);
+            const filteredEvents = events.filter(event => {
+                if (!event.start.dateTime) return false; // Skip event sepanjang hari
+
+                const eventTime = new Date(event.start.dateTime);
+                const eventDay = new Date(eventTime);
+                eventDay.setHours(0, 0, 0, 0); // Set event ke awal hari
+
+                return eventDay.getTime() === today.getTime() && eventTime >= now;
             });
 
-            document.getElementById('showMore').style.display = 'inline-block';
+            if (filteredEvents.length > 0) {
+                filteredEvents.forEach((event, index) => {
+                    const li = document.createElement('li');
+                    const eventTime = new Date(event.start.dateTime);
+                    const localTime = new Intl.DateTimeFormat(navigator.language, {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        timeZone: userTimezone
+                    }).format(eventTime);
+
+                    li.innerHTML = `🔥 <strong>${event.summary}</strong> - ⏰ ${localTime}`;
+                    if (index < 3) li.classList.add('show');
+                    eventsList.appendChild(li);
+                });
+
+                document.getElementById('showMore').style.display = 'inline-block';
+            } else {
+                eventsList.innerHTML = '<li class="show">Tidak ada event tersisa hari ini</li>';
+            }
         } else {
             eventsList.innerHTML = '<li class="show">Tidak ada event hari ini</li>';
         }
@@ -168,6 +178,7 @@
         console.error("Error fetching events:", error);
     });
 }
+
 
 
         document.addEventListener("DOMContentLoaded", function () {
