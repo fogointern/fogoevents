@@ -38,6 +38,9 @@
 }
 
 #todayTitle {
+  
+    position: relative;
+    z-index: 10;
     font-size: 50px;
     font-weight: 900;
     text-transform: uppercase;
@@ -68,6 +71,25 @@
         font-weight: 600;
         animation: neonGlow 2s infinite alternate;
         }
+        /* 🔥 Efek Asap yang Muncul di Belakang Teks */
+@keyframes smokeEffect {
+    0% { opacity: 0.1; transform: translateY(0) scale(1); }
+    50% { opacity: 0.3; transform: translateY(-10px) scale(1.1); }
+    100% { opacity: 0; transform: translateY(-20px) scale(1.2); }
+}
+
+.smoke {
+    position: absolute;
+    width: 120px;
+    height: 60px;
+    background: radial-gradient(circle, rgba(255,255,255,0.2) 10%, rgba(0,0,0,0) 70%);
+    top: 50%;
+    left: 50%;
+    opacity: 0;
+    animation: smokeEffect 2s infinite ease-in-out;
+    pointer-events: none; /* Biar tidak mengganggu teks */
+}
+
 
         /* 🔥 List Event dalam Kotak */
         #eventsContainer {
@@ -253,7 +275,7 @@
 </head>
 <body>
 
-    <h1 id="todayTitle">🔥 Fogo Events 🔥</h1>
+    <h1 id="todayTitle">🔥 Fogo Events 🔥<span class="smoke"></span></h1>
 
     <h2 id="eventsTitle">Today's Events</h2>
     <div id="eventsContainer">
