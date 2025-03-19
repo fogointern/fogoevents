@@ -5,47 +5,43 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🔥 Fogo Events 🔥</title>
 
+    <!-- 🔥 Font Futuristik -->
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+
     <style>
         /* 🔥 Background Bergerak dengan Lighting Efek */
         @keyframes fireBackground {
             0% { background: #0a0a0a; }
-            50% { background: #441500; box-shadow: 0 0 50px rgba(255, 100, 0, 0.3); }
+            50% { background: #5a1c00; box-shadow: 0 0 50px rgba(255, 100, 0, 0.3); }
             100% { background: #0a0a0a; }
         }
 
         body {
-            background: linear-gradient(90deg, #0a0a0a, #441500, #0a0a0a);
+            background: linear-gradient(90deg, #0a0a0a, #5a1c00, #0a0a0a);
             background-size: 400% 400%;
             animation: fireBackground 8s infinite alternate;
             color: white;
-            font-family: 'Poppins', sans-serif;
+            font-family: 'Orbitron', sans-serif;
             margin: 0;
             padding: 0;
             text-align: center;
         }
 
-        /* 🔥 Efek Glow Neon untuk H1 */
-        @keyframes neonGlow {
-            0% { text-shadow: 0 0 10px #ff4500, 0 0 20px #ff5733; }
-            50% { text-shadow: 0 0 15px #ff5733, 0 0 25px #ff7700; }
-            100% { text-shadow: 0 0 10px #ff4500, 0 0 20px #ff5733; }
+        /* 🔥 Efek Glow Api untuk H1 */
+        @keyframes fireEffect {
+            0% { text-shadow: 0 0 20px #ff4500, 0 0 30px #ff5733; }
+            50% { text-shadow: 0 0 25px #ff7700, 0 0 40px #ff9900; }
+            100% { text-shadow: 0 0 20px #ff4500, 0 0 30px #ff5733; }
         }
 
         #todayTitle {
-            font-size: 42px;
+            font-size: 38px;
             font-weight: bold;
             padding: 20px;
-            animation: neonGlow 2s infinite alternate;
+            animation: fireEffect 2s infinite alternate;
             color: #ff9900;
             text-transform: uppercase;
             letter-spacing: 2px;
-        }
-
-        /* 🔥 Teks Event */
-        #eventsTitle {
-            font-size: 26px;
-            font-weight: 600;
-            color: #FFD700;
         }
 
         /* 🔥 List Event */
@@ -65,30 +61,25 @@
         }
 
         #events li {
-            display: none; /* Semua event disembunyikan dulu */
+            display: none;
             font-size: 20px;
             font-weight: bold;
             padding: 10px;
             margin: 10px auto;
-            background: linear-gradient(90deg, #220b05, #ff4500, #ff7700);
+            background: linear-gradient(90deg, #5a1c00, #ff4500, #ff9900);
             color: white;
             border-radius: 10px;
             text-align: center;
-            transition: transform 0.4s ease-in-out, box-shadow 0.4s ease-in-out;
+            box-shadow: 0px 0px 10px rgba(255, 140, 0, 0.7);
         }
 
         #events li:nth-child(-n+3) { 
-            display: block; /* Hanya 3 event pertama terlihat */
-        }
-
-        #events li:hover {
-            transform: scale(1.05);
-            box-shadow: 0px 0px 20px rgba(255, 140, 0, 1);
+            display: block;
         }
 
         /* 🔥 Tombol "Lihat Semua" */
         #showMore {
-            background: linear-gradient(90deg, #ff4500, #ff7700);
+            background: linear-gradient(90deg, #ff7700, #ff4500);
             color: white;
             font-size: 18px;
             padding: 10px;
@@ -97,14 +88,26 @@
             border-radius: 8px;
             cursor: pointer;
             transition: transform 0.3s;
-            display: none; /* Tombol tersembunyi awalnya */
+            display: none;
+            box-shadow: 0px 0px 10px rgba(255, 165, 0, 0.7);
         }
 
         #showMore:hover {
-            transform: scale(1.05);
+            transform: scale(1.1);
+        }
+
+        /* 🔥 Spasi sebelum tulisan Calendar */
+        .spacer {
+            margin-top: 20px;
         }
 
         /* 🔥 Frame Kalender */
+        #calendarTitle {
+            font-size: 26px;
+            font-weight: 600;
+            color: #FFD700;
+        }
+
         #calendarFrame {
             width: 90%;
             height: 600px;
@@ -186,6 +189,10 @@
             document.getElementById("calendarFrame").src = 
                 `https://calendar.google.com/calendar/embed?src=${CALENDAR_ID}&ctz=${encodeURIComponent(userTimezone)}`;
 
+            const today = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            document.getElementById("todayTitle").innerHTML = `🔥 Fogo Events - ${today.toLocaleDateString('en-US', options)} 🔥`;
+
             document.getElementById('showMore').addEventListener('click', function () {
                 document.querySelectorAll('#events li').forEach(li => li.style.display = 'block');
                 this.style.display = 'none';
@@ -195,7 +202,7 @@
 </head>
 <body>
 
-    <h1 id="todayTitle">🔥 Fogo Events 🔥</h1>
+    <h1 id="todayTitle"></h1>
 
     <h2 id="eventsTitle">Today's Events</h2>
     <div id="eventsContainer">
@@ -203,6 +210,8 @@
         <button id="showMore">Lihat Semua</button>
     </div>
 
+    <div class="spacer"></div>
+    <h2 id="calendarTitle">Calendar</h2>
     <iframe id="calendarFrame"></iframe>
 
     <p id="footer">Made with ❤️ by Intern</p>
