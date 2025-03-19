@@ -24,32 +24,32 @@
             text-align: center;
         }
 
-       /* 🔥 Animasi Gradient Bergerak Lebih Halus */
-@keyframes fireText {
-    0% { background-position: 0% 50%; opacity: 0.9; }
-    50% { background-position: 100% 50%; opacity: 1; }
-    100% { background-position: 0% 50%; opacity: 0.9; }
-}
+        /* 🔥 Animasi Glow Neon untuk H1 */
+        @keyframes neonGlow {
+            0% { text-shadow: 0 0 5px var(--neon-color1), 0 0 10px var(--neon-color2), 0 0 15px var(--neon-color3); }
+            50% { text-shadow: 0 0 10px var(--neon-color2), 0 0 20px var(--neon-color3), 0 0 30px var(--neon-color1); }
+            100% { text-shadow: 0 0 5px var(--neon-color1), 0 0 10px var(--neon-color2), 0 0 15px var(--neon-color3); }
+        }
 
-/* 🔥 Animasi Glow Neon */
-@keyframes neonGlow {
-    0% { text-shadow: 0 0 5px var(--neon-color1), 0 0 10px var(--neon-color2), 0 0 15px var(--neon-color3); }
-    50% { text-shadow: 0 0 10px var(--neon-color2), 0 0 20px var(--neon-color3), 0 0 30px var(--neon-color1); }
-    100% { text-shadow: 0 0 5px var(--neon-color1), 0 0 10px var(--neon-color2), 0 0 15px var(--neon-color3); }
-}
+        /* 🔥 H1 dengan Neon Effect */
+        #todayTitle {
+            font-size: 52px;
+            font-weight: 900;
+            text-transform: uppercase;
+            letter-spacing: 4px;
+            padding: 20px;
+            text-align: center;
+            color: var(--neon-color1);
+            animation: neonGlow 2s infinite alternate;
+            transition: color 0.3s ease-in-out;
+        }
 
-/* 🔥 H1 dengan Neon Effect */
-#todayTitle {
-    font-size: 52px;
-    font-weight: 900;
-    text-transform: uppercase;
-    letter-spacing: 4px;
-    padding: 20px;
-    text-align: center;
-    color: var(--neon-color1);
-    animation: neonGlow 2s infinite alternate;
-    transition: color 0.3s ease-in-out;
-}
+    /* 🔥 Efek Hover untuk H1 */
+    #todayTitle:hover {
+        transform: scale(1.1);
+        text-shadow: 0 0 20px rgba(255, 69, 0, 1), 0 0 30px rgba(255, 140, 0, 1);
+    
+    }
 
     /* 🔥 Efek Neon yang Lebih Keren untuk H2 */
     @keyframes neonGlow {
@@ -160,20 +160,21 @@
         }
 
         function getEvents() {
-    const now = new Date();
+            const now = new Date();
     const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
+    // Konversi waktu lokal pengguna ke format ISO dengan timezone yang sesuai
     const todayStart = new Date();
-    todayStart.setHours(0, 0, 0, 0);
+    todayStart.setHours(0, 0, 0, 0); // Set ke awal hari ini di timezone pengguna
 
     const todayEnd = new Date();
-    todayEnd.setHours(23, 59, 59, 999);
+    todayEnd.setHours(23, 59, 59, 999); // Set ke akhir hari ini di timezone pengguna
 
     gapi.client.calendar.events.list({
         'calendarId': CALENDAR_ID,
-        'timeMin': todayStart.toISOString(),
-        'timeMax': todayEnd.toISOString(),
-        'timeZone': userTimezone,  // Pastikan API membaca timezone pengguna
+        'timeMin': todayStart.toISOString(), // Mulai dari 00:00 hari ini
+        'timeMax': todayEnd.toISOString(),   // Sampai 23:59 hari ini
+        'timeZone': userTimezone,            // Pastikan sesuai timezone pengguna
         'showDeleted': false,
         'singleEvents': true,
         'orderBy': 'startTime'
@@ -182,38 +183,32 @@
         const eventsList = document.getElementById('events');
         eventsList.innerHTML = '';
 
-        let eventCount = 0;
+        if (events.length > 0) {
+            events.forEach((event, index) => {
+                const eventTime = new Date(event.start.dateTime || event.start.date);
 
-        events.forEach(event => {
-            let eventTimeUTC = new Date(event.start.dateTime || event.start.date);
-
-            // **Konversi Waktu Event ke Timezone Pengguna**
-            let eventTimeLocal = new Date(eventTimeUTC.toLocaleString("en-US", { timeZone: userTimezone }));
-
-            // **FILTER: Hanya tampilkan event yang belum terjadi**
-            if (eventTimeLocal >= now) {
                 const li = document.createElement('li');
-                const formattedTime = new Intl.DateTimeFormat(navigator.language, {
+                const localTime = new Intl.DateTimeFormat(navigator.language, {
                     hour: '2-digit',
                     minute: '2-digit',
-                    timeZone: userTimezone  // Format jam sesuai timezone pengguna
-                }).format(eventTimeLocal);
+                    timeZone: userTimezone // Format jam sesuai timezone pengguna
+                }).format(eventTime);
 
-                li.innerHTML = `🔥 <strong>${event.summary}</strong> - ⏰ ${formattedTime}`;
-                li.classList.add('show');
+                li.innerHTML = `🔥 <strong>${event.summary}</strong> - ⏰ ${localTime}`;
+                if (index < 3) li.classList.add('show');
                 eventsList.appendChild(li);
-                eventCount++;
+            });
+
+            if (eventsList.children.length === 0) {
+                eventsList.innerHTML = '<li class="show">No Events Today</li>';
+            } else {
+                document.getElementById('showMore').style.display = 'inline-block';
             }
-        });
-
-        // Jika tidak ada event yang tersisa setelah filter, tampilkan pesan
-        if (eventCount === 0) {
-            eventsList.innerHTML = '<li class="show">✅ Tidak ada event yang tersisa hari ini</li>';
+        } else {
+            eventsList.innerHTML = '<li class="show">No Events Today</li>';
         }
-
     }).catch(error => {
         console.error("Error fetching events:", error);
-        document.getElementById('events').innerHTML = '<li class="show">❌ Gagal memuat event</li>';
     });
         }
 
@@ -222,18 +217,9 @@
         const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
         const formattedDate = today.toLocaleDateString('en-US', options);
 
-        const neonColors = [
-            ["#FF5733", "#FFC300", "#DAF7A6"], // Merah ke kuning
-            ["#FF0000", "#FF7300", "#FFEA00"], // Merah ke emas
-            ["#D400FF", "#9400D3", "#4B0082"], // Ungu ke biru
-            ["#0099FF", "#00CCFF", "#00FFFF"], // Biru neon
-            ["#33FF57", "#57FF33", "#99FF00"]  // Hijau neon
-        ];
-
-        const randomNeon = neonColors[Math.floor(Math.random() * neonColors.length)];
-        document.documentElement.style.setProperty('--neon-color1', randomNeon[0]);
-        document.documentElement.style.setProperty('--neon-color2', randomNeon[1]);
-        document.documentElement.style.setProperty('--neon-color3', randomNeon[2]);
+        // Array warna acak untuk H1
+        const colors = ["#FF5733", "#FFC300", "#DAF7A6", "#C70039", "#581845"];
+        const randomColor = colors[Math.floor(Math.random() * colors.length)];
 
         // Set teks dan warna H1
         const todayTitle = document.getElementById("todayTitle");
@@ -270,11 +256,28 @@
         <span id="showMore" style="display: none;">Lihat Semua</span>
         <span id="showLess" style="display: none;">Sembunyikan</span>
     </div>
-
+    <br>
     <h2 id="calendarTitle">Calendar</h2>
     <iframe id="calendarFrame"></iframe>
 
     <p id="footer">Made with ❤️ by Intern</p>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+            const neonColors = [
+                ["#FF5733", "#FFC300", "#DAF7A6"], // Merah ke kuning
+                ["#FF0000", "#FF7300", "#FFEA00"], // Merah ke emas
+                ["#D400FF", "#9400D3", "#4B0082"], // Ungu ke biru
+                ["#0099FF", "#00CCFF", "#00FFFF"], // Biru neon
+                ["#33FF57", "#57FF33", "#99FF00"]  // Hijau neon
+            ];
+
+            const randomNeon = neonColors[Math.floor(Math.random() * neonColors.length)];
+            document.documentElement.style.setProperty('--neon-color1', randomNeon[0]);
+            document.documentElement.style.setProperty('--neon-color2', randomNeon[1]);
+            document.documentElement.style.setProperty('--neon-color3', randomNeon[2]);
+        });
+    </script>
 
 </body>
 </html>
