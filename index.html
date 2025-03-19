@@ -41,17 +41,15 @@
             letter-spacing: 2px;
         }
 
-        /* 🔥 Teks Event dan Calendar */
-        #eventsTitle, #calendarTitle {
+        /* 🔥 Teks Event */
+        #eventsTitle {
             font-size: 26px;
             font-weight: 600;
             color: #FFD700;
         }
 
-        /* 🔥 List Event dalam Kotak */
+        /* 🔥 List Event */
         #eventsContainer {
-            max-height: 300px;
-            overflow-y: auto;
             padding: 10px;
             border-radius: 10px;
             background: rgba(255, 69, 0, 0.1);
@@ -67,6 +65,7 @@
         }
 
         #events li {
+            display: none; /* Semua event disembunyikan dulu */
             font-size: 20px;
             font-weight: bold;
             padding: 10px;
@@ -78,12 +77,34 @@
             transition: transform 0.4s ease-in-out, box-shadow 0.4s ease-in-out;
         }
 
+        #events li:nth-child(-n+3) { 
+            display: block; /* Hanya 3 event pertama terlihat */
+        }
+
         #events li:hover {
             transform: scale(1.05);
             box-shadow: 0px 0px 20px rgba(255, 140, 0, 1);
         }
 
-        /* 🔥 Frame Kalender Shadow Orange-Merah */
+        /* 🔥 Tombol "Lihat Semua" */
+        #showMore {
+            background: linear-gradient(90deg, #ff4500, #ff7700);
+            color: white;
+            font-size: 18px;
+            padding: 10px;
+            margin-top: 10px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: transform 0.3s;
+            display: none; /* Tombol tersembunyi awalnya */
+        }
+
+        #showMore:hover {
+            transform: scale(1.05);
+        }
+
+        /* 🔥 Frame Kalender */
         #calendarFrame {
             width: 90%;
             height: 600px;
@@ -92,7 +113,7 @@
             border-radius: 10px;
         }
 
-        /* 🔥 Made with Love */
+        /* 🔥 Footer */
         #footer {
             margin-top: 20px;
             font-size: 16px;
@@ -102,8 +123,9 @@
 
     <script defer src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
     <script>
-       const API_KEY = 'AIzaSyDjVXwUbLWZv052kRzAXmjvxEWTGuY7BLw'; 
+        const API_KEY = 'AIzaSyDjVXwUbLWZv052kRzAXmjvxEWTGuY7BLw'; 
         const CALENDAR_ID = '287026a99cb10f73790c5dbcebfc76a12e564079e02f3b3be161b752b7d78f56@group.calendar.google.com'; 
+
         function gapiLoaded() {
             gapi.load('client', loadClient);
         }
@@ -116,34 +138,41 @@
         }
 
         function getEvents() {
-            const todayStart = new Date().setHours(0, 0, 0, 0);
-            const todayEnd = new Date().setHours(23, 59, 59, 999);
+            const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            const todayStart = new Date();
+            todayStart.setHours(0, 0, 0, 0);
+            const todayEnd = new Date();
+            todayEnd.setHours(23, 59, 59, 999);
 
             gapi.client.calendar.events.list({
                 'calendarId': CALENDAR_ID,
-                'timeMin': new Date(todayStart).toISOString(),
-                'timeMax': new Date(todayEnd).toISOString(),
+                'timeMin': todayStart.toISOString(),
+                'timeMax': todayEnd.toISOString(),
                 'showDeleted': false,
                 'singleEvents': true,
                 'orderBy': 'startTime'
             }).then(response => {
                 const events = response.result.items;
                 const eventsList = document.getElementById('events');
+                const showMoreBtn = document.getElementById('showMore');
                 eventsList.innerHTML = '';
 
                 if (events.length > 0) {
-                    events.forEach(event => {
+                    events.forEach((event, index) => {
                         const li = document.createElement('li');
                         const eventTime = new Date(event.start.dateTime || event.start.date);
                         const localTime = new Intl.DateTimeFormat(navigator.language, {
                             hour: '2-digit',
                             minute: '2-digit',
-                            timeZone: Intl.DateTimeFormat().resolvedOptions().timeZone
+                            timeZone: userTimezone
                         }).format(eventTime);
 
                         li.innerHTML = `<strong>${event.summary}</strong> - ⏰ ${localTime}`;
+                        if (index >= 3) li.style.display = 'none';
                         eventsList.appendChild(li);
                     });
+
+                    if (events.length > 3) showMoreBtn.style.display = 'block';
                 } else {
                     eventsList.innerHTML = '<li>No Events Today</li>';
                 }
@@ -153,34 +182,29 @@
         }
 
         document.addEventListener("DOMContentLoaded", function () {
-            const today = new Date();
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            const formattedDate = today.toLocaleDateString('en-US', options);
-
-            document.getElementById("todayTitle").innerHTML = `🔥 Fogo Events - ${formattedDate} 🔥`;
-
             const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
             document.getElementById("calendarFrame").src = 
                 `https://calendar.google.com/calendar/embed?src=${CALENDAR_ID}&ctz=${encodeURIComponent(userTimezone)}`;
+
+            document.getElementById('showMore').addEventListener('click', function () {
+                document.querySelectorAll('#events li').forEach(li => li.style.display = 'block');
+                this.style.display = 'none';
+            });
         });
     </script>
 </head>
 <body>
 
-    <!-- 🔥 Judul dengan Tanggal -->
     <h1 id="todayTitle">🔥 Fogo Events 🔥</h1>
 
-    <!-- 🔥 Event Hari Ini -->
     <h2 id="eventsTitle">Today's Events</h2>
     <div id="eventsContainer">
         <ul id="events">Loading events...</ul>
+        <button id="showMore">Lihat Semua</button>
     </div>
 
-    <!-- 🔥 Google Calendar -->
-    <h2 id="calendarTitle">Calendar</h2>
     <iframe id="calendarFrame"></iframe>
 
-    <!-- 🔥 Footer -->
     <p id="footer">Made with ❤️ by Intern</p>
 
 </body>
