@@ -6,17 +6,17 @@
     <title>🔥 Fogo Events 🔥</title>
 
     <style>
-        /* 🔥 Background Interaktif */
-        @keyframes fireBackground {
-            0% { background: #0a0a0a; }
-            50% { background: #441500; box-shadow: 0 0 50px rgba(255, 100, 0, 0.5); }
-            100% { background: #0a0a0a; }
+        /* 🔥 Background Bergerak Lebih Smooth */
+        @keyframes fireEffect {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
         }
 
         body {
-            background: linear-gradient(90deg, #0a0a0a, #441500, #0a0a0a);
+            background: linear-gradient(-45deg, #0a0a0a, #290f0f, #662200, #0a0a0a);
             background-size: 400% 400%;
-            animation: fireBackground 6s infinite linear alternate;
+            animation: fireEffect 12s infinite linear;
             color: white;
             font-family: 'Poppins', sans-serif;
             margin: 0;
@@ -24,30 +24,23 @@
             text-align: center;
         }
 
-        /* 🔥 Efek Glow Neon untuk Today's Events */
-        @keyframes neonGlow {
-            0% { text-shadow: 0 0 10px #ff4500, 0 0 20px #ff5733; }
-            50% { text-shadow: 0 0 15px #ff5733, 0 0 25px #ff7700; }
-            100% { text-shadow: 0 0 10px #ff4500, 0 0 20px #ff5733; }
-        }
-
-        #eventsTitle {
-            font-size: 26px;
+        /* 🔥 Efek Glow Neon */
+        #todayTitle {
+            font-size: 42px;
             font-weight: bold;
+            padding: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* 🔥 Teks Event dan Calendar */
+        #eventsTitle, #calendarTitle {
+            font-size: 26px;
+            font-weight: 600;
             color: #FFD700;
-            animation: neonGlow 2s infinite alternate;
         }
 
-        /* 🔥 Warna Random untuk Fogo Events */
-        .randomColor {
-            color: rgb(
-                calc(100 + Math.random() * 155),
-                calc(50 + Math.random() * 100),
-                calc(0 + Math.random() * 100)
-            );
-        }
-
-        /* 🔥 List Event */
+        /* 🔥 List Event dalam Kotak */
         #eventsContainer {
             padding: 10px;
             border-radius: 10px;
@@ -64,6 +57,10 @@
         }
 
         #events li {
+            display: none;
+            opacity: 0;
+            transform: translateY(-10px);
+            transition: opacity 0.5s ease, transform 0.5s ease;
             font-size: 20px;
             font-weight: bold;
             padding: 10px;
@@ -72,33 +69,30 @@
             color: white;
             border-radius: 10px;
             text-align: center;
-            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
         }
 
-        #events li:hover {
-            transform: scale(1.05);
-            box-shadow: 0px 0px 20px rgba(255, 140, 0, 1);
+        #events li.show {
+            display: block !important;
+            opacity: 1;
+            transform: translateY(0);
         }
 
-        /* 🔥 Tombol */
-        #toggleButton {
+        /* 🔥 Tombol Lihat Semua */
+        #showMore, #showLess {
+            cursor: pointer;
             background: #ff4500;
             color: white;
-            padding: 10px;
-            border: none;
+            padding: 8px 15px;
             border-radius: 5px;
-            cursor: pointer;
-            font-size: 16px;
+            display: inline-block;
+            margin-top: 15px;
+            transition: 0.3s ease-in-out;
             font-weight: bold;
-            margin-top: 10px;
-            display: block;
-            width: 200px;
-            margin: 10px auto;
-            transition: background 0.3s;
         }
 
-        #toggleButton:hover {
+        #showMore:hover, #showLess:hover {
             background: #ff7700;
+            transform: scale(1.1);
         }
 
         /* 🔥 Frame Kalender */
@@ -108,15 +102,27 @@
             border: 0;
             box-shadow: 0px 0px 30px rgba(255, 69, 0, 0.7);
             border-radius: 10px;
-            margin-top: 20px;
         }
 
+        /* 🔥 Made with Love */
+        #footer {
+            margin-top: 20px;
+            font-size: 16px;
+            color: #ff5733;
+        }
+
+        /* 🔥 Responsive Calendar di Desktop */
+        @media (min-width: 768px) {
+            #calendarFrame {
+                width: 70%;
+            }
+        }
     </style>
 
     <script defer src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
     <script>
-         const API_KEY = 'AIzaSyDjVXwUbLWZv052kRzAXmjvxEWTGuY7BLw'; 
-        const CALENDAR_ID = '287026a99cb10f73790c5dbcebfc76a12e564079e02f3b3be161b752b7d78f56@group.calendar.google.com'; 
+        const API_KEY = 'AIzaSyDjVXwUbLWZv052kRzAXmjvxEWTGuY7BLw';
+        const CALENDAR_ID = '287026a99cb10f73790c5dbcebfc76a12e564079e02f3b3be161b752b7d78f56@group.calendar.google.com';
 
         function gapiLoaded() {
             gapi.load('client', loadClient);
@@ -130,11 +136,12 @@
         }
 
         function getEvents() {
-            const now = new Date().toISOString();
+            const now = new Date();
+            const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
             gapi.client.calendar.events.list({
                 'calendarId': CALENDAR_ID,
-                'timeMin': now,
+                'timeMin': now.toISOString(),
                 'showDeleted': false,
                 'singleEvents': true,
                 'orderBy': 'startTime'
@@ -143,37 +150,24 @@
                 const eventsList = document.getElementById('events');
                 eventsList.innerHTML = '';
 
-                let count = 0;
-                const eventElements = [];
-
-                events.forEach(event => {
-                    const eventTime = new Date(event.start.dateTime || event.start.date);
-                    if (eventTime >= new Date()) {
-                        count++;
+                if (events.length > 0) {
+                    events.forEach((event, index) => {
                         const li = document.createElement('li');
-                        li.innerHTML = `<strong>${event.summary}</strong> - ⏰ ${eventTime.toLocaleTimeString()}`;
-                        eventElements.push(li);
-                    }
-                });
+                        const eventTime = new Date(event.start.dateTime || event.start.date);
+                        const localTime = new Intl.DateTimeFormat(navigator.language, {
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            timeZone: userTimezone
+                        }).format(eventTime);
 
-                const maxVisible = 3;
-                eventElements.slice(0, maxVisible).forEach(event => eventsList.appendChild(event));
+                        li.innerHTML = `🔥 <strong>${event.summary}</strong> - ⏰ ${localTime}`;
+                        if (index < 3) li.classList.add('show');
+                        eventsList.appendChild(li);
+                    });
 
-                if (count > maxVisible) {
-                    const toggleButton = document.createElement("button");
-                    toggleButton.id = "toggleButton";
-                    toggleButton.textContent = "Tampilkan Semua";
-                    toggleButton.onclick = function () {
-                        const isExpanded = toggleButton.textContent === "Sembunyikan";
-                        if (isExpanded) {
-                            eventElements.slice(maxVisible).forEach(event => event.remove());
-                            toggleButton.textContent = "Tampilkan Semua";
-                        } else {
-                            eventElements.slice(maxVisible).forEach(event => eventsList.appendChild(event));
-                            toggleButton.textContent = "Sembunyikan";
-                        }
-                    };
-                    eventsList.appendChild(toggleButton);
+                    document.getElementById('showMore').style.display = 'inline-block';
+                } else {
+                    eventsList.innerHTML = '<li class="show">No Events Today</li>';
                 }
             }).catch(error => {
                 console.error("Error fetching events:", error);
@@ -183,23 +177,46 @@
         document.addEventListener("DOMContentLoaded", function () {
             const today = new Date();
             const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            document.getElementById("todayTitle").innerHTML = `🔥 Fogo Events - ${today.toLocaleDateString('en-US', options)} 🔥`;
+            const formattedDate = today.toLocaleDateString('en-US', options);
 
+            const todayTitle = document.getElementById("todayTitle");
+            todayTitle.innerHTML = `🔥 Fogo Events - ${formattedDate} 🔥`;
+
+            const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
             document.getElementById("calendarFrame").src = 
-                `https://calendar.google.com/calendar/embed?src=${CALENDAR_ID}&ctz=${encodeURIComponent(Intl.DateTimeFormat().resolvedOptions().timeZone)}`;
+                `https://calendar.google.com/calendar/embed?src=${CALENDAR_ID}&ctz=${encodeURIComponent(userTimezone)}`;
+
+            document.getElementById("showMore").addEventListener("click", function () {
+                document.querySelectorAll("#events li").forEach(li => li.classList.add('show'));
+                document.getElementById("showMore").style.display = "none";
+                document.getElementById("showLess").style.display = "inline-block";
+            });
+
+            document.getElementById("showLess").addEventListener("click", function () {
+                document.querySelectorAll("#events li").forEach((li, index) => {
+                    if (index >= 3) li.classList.remove('show');
+                });
+                document.getElementById("showMore").style.display = "inline-block";
+                document.getElementById("showLess").style.display = "none";
+            });
         });
     </script>
-
 </head>
 <body>
 
     <h1 id="todayTitle">🔥 Fogo Events 🔥</h1>
+
     <h2 id="eventsTitle">Today's Events</h2>
     <div id="eventsContainer">
         <ul id="events">Loading events...</ul>
+        <span id="showMore" style="display: none;">Lihat Semua</span>
+        <span id="showLess" style="display: none;">Sembunyikan</span>
     </div>
-    
+
+    <h2 id="calendarTitle">Calendar</h2>
     <iframe id="calendarFrame"></iframe>
+
+    <p id="footer">Made with ❤️ by Intern</p>
 
 </body>
 </html>
