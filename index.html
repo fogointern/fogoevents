@@ -3,20 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title> Fogo Events⚡</title>
+    <title>⚡ Fogo Events - Neon Fire ⚡</title>
 
     <style>
         /* 🔥 Background Bergerak Orange-Hitam */
         @keyframes fireBackground {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
+            0% { background: #0a0a0a; }
+            50% { background: #ff4500; }
+            100% { background: #0a0a0a; }
         }
 
         body {
-            background: linear-gradient(45deg, #0a0a0a, #1a0a05, #441500);
-            background-size: 300% 300%;
-            animation: fireBackground 8s infinite alternate;
+            background-size: cover;
+            animation: fireBackground 6s infinite alternate;
             color: white;
             font-family: 'Poppins', sans-serif;
             margin: 0;
@@ -50,14 +49,14 @@
             text-shadow: 0 0 10px rgba(255, 153, 0, 0.7);
         }
 
-        /* 🔥 List Event dalam Kotak Interaktif */
+        /* 🔥 List Event dalam Kotak Elegan */
         #events {
             list-style-type: none;
             padding: 0;
         }
 
         #events li {
-            background: linear-gradient(90deg, #ff4500, #ff7700);
+            background: rgba(0, 0, 0, 0.7);
             color: white;
             font-size: 22px;
             font-weight: bold;
@@ -66,13 +65,14 @@
             border-radius: 10px;
             max-width: 600px;
             text-align: center;
+            border: 2px solid #ff9900;
             transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
         }
 
-        /* 🔥 Hover dengan Efek Api Neon */
+        /* 🔥 Hover dengan Efek Neon */
         #events li:hover {
             transform: scale(1.05);
-            box-shadow: 0px 0px 20px rgba(255, 69, 0, 0.9);
+            box-shadow: 0px 0px 15px rgba(255, 153, 0, 0.9);
         }
 
         /* 🔥 Frame Kalender lebih smooth dengan glowing effect */
@@ -144,7 +144,7 @@
 <body>
 
     <!-- 🔥 Judul Neon Berubah Warna -->
-    <h1 id="todayTitle"> ⚡Fogo Events⚡ </h1>
+    <h1 id="todayTitle">⚡ Fogo Events 🔥</h1>
 
     <!-- 🔥 Event Hari Ini -->
     <h2 id="eventsTitle"> Today’s Events </h2>
