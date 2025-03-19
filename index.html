@@ -5,18 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🔥 Fogo Events 🔥</title>
 
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;800&display=swap" rel="stylesheet">
+
     <style>
-        /* 🔥 Background Interaktif */
+        /* 🔥 Background Smooth dengan Animasi */
         @keyframes fireBackground {
-            0% { background: #0a0a0a; }
-            50% { background: #441500; box-shadow: 0 0 50px rgba(255, 100, 0, 0.5); }
-            100% { background: #0a0a0a; }
+            0% { background: #121212; }
+            50% { background: #441500; box-shadow: 0 0 50px rgba(255, 100, 0, 0.3); }
+            100% { background: #121212; }
         }
 
         body {
-            background: linear-gradient(90deg, #0a0a0a, #441500, #0a0a0a);
+            background: linear-gradient(90deg, #121212, #441500, #121212);
             background-size: 400% 400%;
-            animation: fireBackground 6s infinite linear alternate;
+            animation: fireBackground 8s infinite alternate;
             color: white;
             font-family: 'Poppins', sans-serif;
             margin: 0;
@@ -24,30 +27,23 @@
             text-align: center;
         }
 
-        /* 🔥 Efek Glow Neon untuk Today's Events */
+        /* 🔥 Judul dengan Warna Berubah */
         @keyframes neonGlow {
-            0% { text-shadow: 0 0 10px #ff4500, 0 0 20px #ff5733; }
-            50% { text-shadow: 0 0 15px #ff5733, 0 0 25px #ff7700; }
-            100% { text-shadow: 0 0 10px #ff4500, 0 0 20px #ff5733; }
+            0% { color: #ff9900; text-shadow: 0 0 10px #ff4500; }
+            50% { color: #ff5733; text-shadow: 0 0 20px #ff7700; }
+            100% { color: #ff9900; text-shadow: 0 0 10px #ff4500; }
         }
 
-        #eventsTitle {
-            font-size: 26px;
-            font-weight: bold;
-            color: #FFD700;
+        #todayTitle {
+            font-size: 42px;
+            font-weight: 800;
+            padding: 20px;
             animation: neonGlow 2s infinite alternate;
+            text-transform: uppercase;
+            letter-spacing: 2px;
         }
 
-        /* 🔥 Warna Random untuk Fogo Events */
-        .randomColor {
-            color: rgb(
-                calc(100 + Math.random() * 155),
-                calc(50 + Math.random() * 100),
-                calc(0 + Math.random() * 100)
-            );
-        }
-
-        /* 🔥 List Event */
+        /* 🔥 List Events */
         #eventsContainer {
             padding: 10px;
             border-radius: 10px;
@@ -56,6 +52,7 @@
             margin: auto;
             width: 90%;
             max-width: 600px;
+            transition: all 0.3s ease-in-out;
         }
 
         #events {
@@ -72,7 +69,15 @@
             color: white;
             border-radius: 10px;
             text-align: center;
-            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            transition: transform 0.4s ease-in-out, box-shadow 0.4s ease-in-out;
+            opacity: 0;
+            transform: translateY(10px);
+            animation: fadeIn 0.5s forwards;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         #events li:hover {
@@ -80,43 +85,45 @@
             box-shadow: 0px 0px 20px rgba(255, 140, 0, 1);
         }
 
-        /* 🔥 Tombol */
-        #toggleButton {
+        /* 🔥 Tombol Lihat Semua */
+        .toggle-btn {
             background: #ff4500;
             color: white;
-            padding: 10px;
+            font-size: 18px;
+            padding: 10px 15px;
             border: none;
-            border-radius: 5px;
+            border-radius: 8px;
             cursor: pointer;
-            font-size: 16px;
-            font-weight: bold;
             margin-top: 10px;
-            display: block;
-            width: 200px;
-            margin: 10px auto;
-            transition: background 0.3s;
+            transition: background 0.3s ease, transform 0.2s ease;
         }
 
-        #toggleButton:hover {
+        .toggle-btn:hover {
             background: #ff7700;
+            transform: scale(1.05);
         }
 
-        /* 🔥 Frame Kalender */
+        /* 🔥 Kalender dengan Shadow */
         #calendarFrame {
             width: 90%;
             height: 600px;
             border: 0;
             box-shadow: 0px 0px 30px rgba(255, 69, 0, 0.7);
             border-radius: 10px;
-            margin-top: 20px;
         }
 
+        /* 🔥 Footer */
+        #footer {
+            margin-top: 20px;
+            font-size: 16px;
+            color: #ff5733;
+        }
     </style>
 
     <script defer src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
     <script>
-         const API_KEY = 'AIzaSyDjVXwUbLWZv052kRzAXmjvxEWTGuY7BLw'; 
-        const CALENDAR_ID = '287026a99cb10f73790c5dbcebfc76a12e564079e02f3b3be161b752b7d78f56@group.calendar.google.com'; 
+        const API_KEY = 'AIzaSyDjVXwUbLWZv052kRzAXmjvxEWTGuY7BLw'; 
+        const CALENDAR_ID = '287026a99cb10f73790c5dbcebfc76a12e564079e02f3b3be161b752b7d78f56@group.calendar.google.com';
 
         function gapiLoaded() {
             gapi.load('client', loadClient);
@@ -130,12 +137,13 @@
         }
 
         function getEvents() {
-            const now = new Date().toISOString();
+            const now = new Date();
+            const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
 
             gapi.client.calendar.events.list({
                 'calendarId': CALENDAR_ID,
-                'timeMin': now,
-                'showDeleted': false,
+                'timeMin': now.toISOString(),
                 'singleEvents': true,
                 'orderBy': 'startTime'
             }).then(response => {
@@ -144,36 +152,24 @@
                 eventsList.innerHTML = '';
 
                 let count = 0;
-                const eventElements = [];
 
                 events.forEach(event => {
                     const eventTime = new Date(event.start.dateTime || event.start.date);
-                    if (eventTime >= new Date()) {
+                    if (eventTime >= now) { // Filter event yang belum lewat
                         count++;
                         const li = document.createElement('li');
-                        li.innerHTML = `<strong>${event.summary}</strong> - ⏰ ${eventTime.toLocaleTimeString()}`;
-                        eventElements.push(li);
+                        const localTime = new Intl.DateTimeFormat(navigator.language, {
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            timeZone
+                        }).format(eventTime);
+                        li.innerHTML = `<strong>${event.summary}</strong> - ⏰ ${localTime}`;
+                        eventsList.appendChild(li);
                     }
                 });
 
-                const maxVisible = 3;
-                eventElements.slice(0, maxVisible).forEach(event => eventsList.appendChild(event));
-
-                if (count > maxVisible) {
-                    const toggleButton = document.createElement("button");
-                    toggleButton.id = "toggleButton";
-                    toggleButton.textContent = "Tampilkan Semua";
-                    toggleButton.onclick = function () {
-                        const isExpanded = toggleButton.textContent === "Sembunyikan";
-                        if (isExpanded) {
-                            eventElements.slice(maxVisible).forEach(event => event.remove());
-                            toggleButton.textContent = "Tampilkan Semua";
-                        } else {
-                            eventElements.slice(maxVisible).forEach(event => eventsList.appendChild(event));
-                            toggleButton.textContent = "Sembunyikan";
-                        }
-                    };
-                    eventsList.appendChild(toggleButton);
+                if (count === 0) {
+                    eventsList.innerHTML = '<li>No Events Remaining Today</li>';
                 }
             }).catch(error => {
                 console.error("Error fetching events:", error);
@@ -183,23 +179,32 @@
         document.addEventListener("DOMContentLoaded", function () {
             const today = new Date();
             const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            document.getElementById("todayTitle").innerHTML = `🔥 Fogo Events - ${today.toLocaleDateString('en-US', options)} 🔥`;
+            const formattedDate = today.toLocaleDateString('en-US', options);
+            document.getElementById("todayTitle").innerHTML = `🔥 Fogo Events - ${formattedDate} 🔥`;
 
-            document.getElementById("calendarFrame").src = 
-                `https://calendar.google.com/calendar/embed?src=${CALENDAR_ID}&ctz=${encodeURIComponent(Intl.DateTimeFormat().resolvedOptions().timeZone)}`;
+            const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            document.getElementById("calendarFrame").src =
+                `https://calendar.google.com/calendar/embed?src=${CALENDAR_ID}&ctz=${encodeURIComponent(userTimezone)}`;
         });
     </script>
-
 </head>
 <body>
 
+    <!-- 🔥 Judul dengan Tanggal -->
     <h1 id="todayTitle">🔥 Fogo Events 🔥</h1>
-    <h2 id="eventsTitle">Today's Events</h2>
+
+    <!-- 🔥 Event Hari Ini -->
+    <h2>Today's Events</h2>
     <div id="eventsContainer">
         <ul id="events">Loading events...</ul>
     </div>
-    
+
+    <!-- 🔥 Google Calendar -->
+    <h2>Calendar</h2>
     <iframe id="calendarFrame"></iframe>
+
+    <!-- 🔥 Footer -->
+    <p id="footer">Made with ❤️ by Intern</p>
 
 </body>
 </html>
