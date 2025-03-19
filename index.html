@@ -24,47 +24,20 @@
             text-align: center;
         }
 
-        /* 🔥 Animasi Warna Gradient untuk H1 */
-    @keyframes gradientText {
-        0% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-        100% { background-position: 0% 50%; }
-    }
+        /* 🔥 Efek Glow Neon */
+        #todayTitle {
+            font-size: 42px;
+            font-weight: bold;
+            padding: 20px;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
 
-    #todayTitle {
-        font-size: 48px;
-        font-weight: 800;
-        text-transform: uppercase;
-        letter-spacing: 3px;
-        padding: 20px;
-        text-align: center;
-        background: linear-gradient(90deg, #ff5733, #ffbd69, #ff5733);
-        background-size: 200% 200%;
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        animation: gradientText 3s infinite alternate;
-        text-shadow: 0 0 10px rgba(255, 69, 0, 0.8), 0 0 20px rgba(255, 140, 0, 0.8);
-        transition: transform 0.3s ease-in-out;
-    }
-
-    /* 🔥 Efek Hover untuk H1 */
-    #todayTitle:hover {
-        transform: scale(1.1);
-        text-shadow: 0 0 20px rgba(255, 69, 0, 1), 0 0 30px rgba(255, 140, 0, 1);
-    
-    }
-
-    /* 🔥 Efek Neon yang Lebih Keren untuk H2 */
-    @keyframes neonGlow {
-        0% { text-shadow: 0 0 5px #FFD700, 0 0 10px #FF4500, 0 0 15px #FF7700; }
-        50% { text-shadow: 0 0 10px #FF4500, 0 0 20px #FF7700, 0 0 30px #FF0000; }
-        100% { text-shadow: 0 0 5px #FFD700, 0 0 10px #FF4500, 0 0 15px #FF7700; }
-    }
-
-    #eventsTitle, #calendarTitle {
-        font-size: 26px;
-        font-weight: 600;
-        animation: neonGlow 2s infinite alternate;
+        /* 🔥 Teks Event dan Calendar */
+        #eventsTitle, #calendarTitle {
+            font-size: 26px;
+            font-weight: 600;
+            color: #FFD700;
         }
 
         /* 🔥 List Event dalam Kotak */
@@ -162,20 +135,21 @@
             }).then(() => getEvents());
         }
 
-        function getEvents() {
-    const now = new Date();
-    const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+     function getEvents() {
+        const now = new Date();
+        const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-    const todayStart = new Date();
-    todayStart.setHours(0, 0, 0, 0);
+        const todayStart = new Date();
+        todayStart.setHours(0, 0, 0, 0);
 
-    const todayEnd = new Date();
-    todayEnd.setHours(23, 59, 59, 999);
+        const todayEnd = new Date();
+        todayEnd.setHours(23, 59, 59, 999);
 
     gapi.client.calendar.events.list({
         'calendarId': CALENDAR_ID,
         'timeMin': todayStart.toISOString(),
         'timeMax': todayEnd.toISOString(),
+        'timeZone': userTimezone,  // Pastikan API membaca timezone pengguna
         'showDeleted': false,
         'singleEvents': true,
         'orderBy': 'startTime'
@@ -184,21 +158,24 @@
         const eventsList = document.getElementById('events');
         eventsList.innerHTML = '';
 
-        let eventCount = 0; // Untuk menghitung event yang valid
+        let eventCount = 0;
 
         events.forEach(event => {
-            const eventTime = new Date(event.start.dateTime || event.start.date);
+            let eventTimeUTC = new Date(event.start.dateTime || event.start.date);
 
-            // **FILTER: Tampilkan hanya event yang belum terjadi**
-            if (eventTime >= now) {
+            // **Konversi Waktu Event ke Timezone Pengguna**
+            let eventTimeLocal = new Date(eventTimeUTC.toLocaleString("en-US", { timeZone: userTimezone }));
+
+            // **FILTER: Hanya tampilkan event yang belum terjadi**
+            if (eventTimeLocal >= now) {
                 const li = document.createElement('li');
-                const localTime = new Intl.DateTimeFormat(navigator.language, {
+                const formattedTime = new Intl.DateTimeFormat(navigator.language, {
                     hour: '2-digit',
                     minute: '2-digit',
-                    timeZone: userTimezone
-                }).format(eventTime);
+                    timeZone: userTimezone  // Format jam sesuai timezone pengguna
+                }).format(eventTimeLocal);
 
-                li.innerHTML = `🔥 <strong>${event.summary}</strong> - ⏰ ${localTime}`;
+                li.innerHTML = `🔥 <strong>${event.summary}</strong> - ⏰ ${formattedTime}`;
                 li.classList.add('show');
                 eventsList.appendChild(li);
                 eventCount++;
@@ -216,21 +193,14 @@
     });
 }
 
-        }
 
-       document.addEventListener("DOMContentLoaded", function () {
-        const today = new Date();
-        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-        const formattedDate = today.toLocaleDateString('en-US', options);
+        document.addEventListener("DOMContentLoaded", function () {
+            const today = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const formattedDate = today.toLocaleDateString('en-US', options);
 
-        // Array warna acak untuk H1
-        const colors = ["#FF5733", "#FFC300", "#DAF7A6", "#C70039", "#581845"];
-        const randomColor = colors[Math.floor(Math.random() * colors.length)];
-
-        // Set teks dan warna H1
-        const todayTitle = document.getElementById("todayTitle");
-        todayTitle.innerHTML = `🔥 Fogo Events - ${formattedDate} 🔥`;
-        todayTitle.style.color = randomColor;
+            const todayTitle = document.getElementById("todayTitle");
+            todayTitle.innerHTML = `🔥 Fogo Events - ${formattedDate} 🔥`;
 
             const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
             document.getElementById("calendarFrame").src = 
