@@ -137,41 +137,55 @@
 
         function getEvents() {
             const now = new Date();
-            const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+    const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-            gapi.client.calendar.events.list({
-                'calendarId': CALENDAR_ID,
-                'timeMin': now.toISOString(),
-                'showDeleted': false,
-                'singleEvents': true,
-                'orderBy': 'startTime'
-            }).then(response => {
-                const events = response.result.items;
-                const eventsList = document.getElementById('events');
-                eventsList.innerHTML = '';
+    // Konversi waktu lokal pengguna ke format ISO dengan timezone yang sesuai
+    const todayStart = new Date();
+    todayStart.setHours(0, 0, 0, 0); // Set ke awal hari ini di timezone pengguna
 
-                if (events.length > 0) {
-                    events.forEach((event, index) => {
-                        const li = document.createElement('li');
-                        const eventTime = new Date(event.start.dateTime || event.start.date);
-                        const localTime = new Intl.DateTimeFormat(navigator.language, {
-                            hour: '2-digit',
-                            minute: '2-digit',
-                            timeZone: userTimezone
-                        }).format(eventTime);
+    const todayEnd = new Date();
+    todayEnd.setHours(23, 59, 59, 999); // Set ke akhir hari ini di timezone pengguna
 
-                        li.innerHTML = `🔥 <strong>${event.summary}</strong> - ⏰ ${localTime}`;
-                        if (index < 3) li.classList.add('show');
-                        eventsList.appendChild(li);
-                    });
+    gapi.client.calendar.events.list({
+        'calendarId': CALENDAR_ID,
+        'timeMin': todayStart.toISOString(), // Mulai dari 00:00 hari ini
+        'timeMax': todayEnd.toISOString(),   // Sampai 23:59 hari ini
+        'timeZone': userTimezone,            // Pastikan sesuai timezone pengguna
+        'showDeleted': false,
+        'singleEvents': true,
+        'orderBy': 'startTime'
+    }).then(response => {
+        const events = response.result.items;
+        const eventsList = document.getElementById('events');
+        eventsList.innerHTML = '';
 
-                    document.getElementById('showMore').style.display = 'inline-block';
-                } else {
-                    eventsList.innerHTML = '<li class="show">No Events Today</li>';
-                }
-            }).catch(error => {
-                console.error("Error fetching events:", error);
+        if (events.length > 0) {
+            events.forEach((event, index) => {
+                const eventTime = new Date(event.start.dateTime || event.start.date);
+
+                const li = document.createElement('li');
+                const localTime = new Intl.DateTimeFormat(navigator.language, {
+                    hour: '2-digit',
+                    minute: '2-digit',
+                    timeZone: userTimezone // Format jam sesuai timezone pengguna
+                }).format(eventTime);
+
+                li.innerHTML = 🔥 <strong>${event.summary}</strong> - ⏰ ${localTime};
+                if (index < 3) li.classList.add('show');
+                eventsList.appendChild(li);
             });
+
+            if (eventsList.children.length === 0) {
+                eventsList.innerHTML = '<li class="show">No Events Today</li>';
+            } else {
+                document.getElementById('showMore').style.display = 'inline-block';
+            }
+        } else {
+            eventsList.innerHTML = '<li class="show">No Events Today</li>';
+        }
+    }).catch(error => {
+        console.error("Error fetching events:", error);
+    });
         }
 
         document.addEventListener("DOMContentLoaded", function () {
