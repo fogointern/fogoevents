@@ -3,10 +3,10 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Fogo Events ⚡ </title>
+    <title>⚡ Fogo Events ⚡</title>
 
     <style>
-        /* 🔥 Background Bergerak (Lava & Api) */
+        /* 🔥 Background Bergerak (Oranye & Hitam) */
         @keyframes fireBackground {
             0% { background-position: 0% 50%; }
             50% { background-position: 100% 50%; }
@@ -14,9 +14,9 @@
         }
 
         body {
-            background: linear-gradient(45deg, #0a0a0a, #1a0a05, #441500);
+            background: linear-gradient(45deg, #0a0a0a, #1a0a05, #ff4500);
             background-size: 300% 300%;
-            animation: fireBackground 8s infinite alternate;
+            animation: fireBackground 6s infinite alternate;
             color: white;
             font-family: 'Poppins', sans-serif;
             margin: 0;
@@ -24,7 +24,7 @@
             text-align: center;
         }
 
-        /* 🔥 Efek Glow Neon untuk Judul */
+        /* 🔥 Efek Neon untuk Judul */
         @keyframes neonGlow {
             0% { text-shadow: 0 0 10px #ff4500, 0 0 20px #ff5733, 0 0 30px #ff7700; }
             50% { text-shadow: 0 0 15px #ff5733, 0 0 25px #ff7700, 0 0 35px #ff9900; }
@@ -84,11 +84,28 @@
             box-shadow: 0px 0px 40px rgba(255, 140, 0, 1);
             border-color: #ffd700;
         }
+
+        /* 🔥 Style Calendar */
+        #calendarTitle {
+            font-size: 26px;
+            font-weight: bold;
+            margin-top: 20px;
+            color: #ffcc00;
+            text-shadow: 0 0 10px #ff9900, 0 0 20px #ff7700;
+        }
+
+        /* 🔥 Footer */
+        #footer {
+            font-size: 18px;
+            margin-top: 30px;
+            color: #ffcc00;
+            text-shadow: 0 0 10px #ff9900, 0 0 20px #ff7700;
+        }
     </style>
 
     <script defer src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
     <script>
-         const API_KEY = 'AIzaSyDjVXwUbLWZv052kRzAXmjvxEWTGuY7BLw'; 
+        const API_KEY = 'AIzaSyDjVXwUbLWZv052kRzAXmjvxEWTGuY7BLw'; 
         const CALENDAR_ID = '287026a99cb10f73790c5dbcebfc76a12e564079e02f3b3be161b752b7d78f56@group.calendar.google.com';  
 
         function gapiLoaded() {
@@ -142,11 +159,21 @@
     </script>
 </head>
 <body>
+
+    <!-- 🔥 Judul dengan tanggal -->
     <h1 id="todayTitle">⚡ Fogo Events ⚡</h1>
-    <h2 id="eventsTitle"> Today’s Events </h2>
+
+    <!-- 🔥 Event Hari Ini -->
+    <h2 id="eventsTitle">Today’s Events 🔥</h2>
     <ul id="events">Loading events...</ul>
-    <h2 style="text-align: center; font-size: 24px; font-weight: bold; color: #ffcc00;"> Calendar </h2>
+
+    <!-- 🔥 Google Calendar -->
+    <h2 id="calendarTitle">📅 Calendar 📅</h2>
     <iframe id="calendarFrame" style="border: 0" width="90%" height="600" frameborder="0" scrolling="no"></iframe>
+
+    <!-- 🔥 Footer -->
+    <div id="footer">Made with ❤️ by Intern</div>
+
     <script>
         document.addEventListener("DOMContentLoaded", function () {
             const today = new Date();
@@ -160,5 +187,6 @@
                 `https://calendar.google.com/calendar/embed?src=${CALENDAR_ID}&ctz=${encodeURIComponent(userTimezone)}`;
         });
     </script>
+
 </body>
 </html>
