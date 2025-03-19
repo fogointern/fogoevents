@@ -16,39 +16,50 @@
         body {
             background: linear-gradient(-45deg, #0a0a0a, #290f0f, #662200, #0a0a0a);
             background-size: 400% 400%;
-            animation: fireEffect 12s infinite linear;
+            animation: fireEffect 20s infinite linear;
             color: white;
             font-family: 'Poppins', sans-serif;
             margin: 0;
             padding: 0;
             text-align: center;
+            opacity: 0;
+            animation: fadeIn 1.5s ease-in-out forwards;
         }
 
-        /* 🔥 Efek Glow Neon */
+        /* 🔥 Efek Fade-in */
+        @keyframes fadeIn {
+            0% { opacity: 0; }
+            100% { opacity: 1; }
+        }
+
+        /* 🔥 Efek Glow Neon di Judul */
+        @keyframes fireGlow {
+            0% { text-shadow: 0 0 10px var(--neonColor), 0 0 20px var(--neonColor); }
+            25% { text-shadow: 0 0 15px #ff4500, 0 0 30px #ff7700; }
+            50% { text-shadow: 0 0 10px var(--neonColor), 0 0 25px var(--neonColor); }
+            75% { text-shadow: 0 0 20px #ff9900, 0 0 35px #ffcc00; }
+            100% { text-shadow: 0 0 10px var(--neonColor), 0 0 20px var(--neonColor); }
+        }
+
         #todayTitle {
             font-size: 42px;
             font-weight: bold;
             padding: 20px;
+            animation: fireGlow 3s infinite alternate;
             text-transform: uppercase;
             letter-spacing: 2px;
+            color: var(--neonColor);
         }
 
-        /* 🔥 Teks Event dan Calendar */
-        #eventsTitle, #calendarTitle {
-            font-size: 26px;
-            font-weight: 600;
-            color: #FFD700;
-        }
-
-        /* 🔥 List Event dalam Kotak */
+        /* 🔥 List Events */
         #eventsContainer {
-            padding: 10px;
-            border-radius: 10px;
-            background: rgba(255, 69, 0, 0.1);
-            box-shadow: inset 0px 0px 15px rgba(255, 140, 0, 0.5);
             margin: auto;
             width: 90%;
             max-width: 600px;
+            padding: 10px;
+            background: rgba(255, 69, 0, 0.1);
+            border-radius: 10px;
+            box-shadow: inset 0px 0px 15px rgba(255, 140, 0, 0.5);
         }
 
         #events {
@@ -57,10 +68,6 @@
         }
 
         #events li {
-            display: none;
-            opacity: 0;
-            transform: translateY(-10px);
-            transition: opacity 0.5s ease, transform 0.5s ease;
             font-size: 20px;
             font-weight: bold;
             padding: 10px;
@@ -69,33 +76,15 @@
             color: white;
             border-radius: 10px;
             text-align: center;
+            transition: transform 0.4s ease-in-out, box-shadow 0.4s ease-in-out;
         }
 
-        #events li.show {
-            display: block !important;
-            opacity: 1;
-            transform: translateY(0);
+        #events li:hover {
+            transform: scale(1.05);
+            box-shadow: 0px 0px 20px rgba(255, 140, 0, 1);
         }
 
-        /* 🔥 Tombol Lihat Semua */
-        #showMore, #showLess {
-            cursor: pointer;
-            background: #ff4500;
-            color: white;
-            padding: 8px 15px;
-            border-radius: 5px;
-            display: inline-block;
-            margin-top: 15px;
-            transition: 0.3s ease-in-out;
-            font-weight: bold;
-        }
-
-        #showMore:hover, #showLess:hover {
-            background: #ff7700;
-            transform: scale(1.1);
-        }
-
-        /* 🔥 Frame Kalender */
+        /* 🔥 Calendar Frame */
         #calendarFrame {
             width: 90%;
             height: 600px;
@@ -104,19 +93,13 @@
             border-radius: 10px;
         }
 
-        /* 🔥 Made with Love */
+        /* 🔥 Footer */
         #footer {
             margin-top: 20px;
             font-size: 16px;
             color: #ff5733;
         }
 
-        /* 🔥 Responsive Calendar di Desktop */
-        @media (min-width: 768px) {
-            #calendarFrame {
-                width: 70%;
-            }
-        }
     </style>
 
     <script defer src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
@@ -137,11 +120,13 @@
 
         function getEvents() {
             const now = new Date();
-            const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            const todayStart = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 0, 0, 0).toISOString();
+            const todayEnd = new Date(now.getFullYear(), now.getMonth(), now.getDate(), 23, 59, 59).toISOString();
 
             gapi.client.calendar.events.list({
                 'calendarId': CALENDAR_ID,
-                'timeMin': now.toISOString(),
+                'timeMin': todayStart,
+                'timeMax': todayEnd,
                 'showDeleted': false,
                 'singleEvents': true,
                 'orderBy': 'startTime'
@@ -151,23 +136,16 @@
                 eventsList.innerHTML = '';
 
                 if (events.length > 0) {
-                    events.forEach((event, index) => {
+                    events.forEach(event => {
                         const li = document.createElement('li');
                         const eventTime = new Date(event.start.dateTime || event.start.date);
-                        const localTime = new Intl.DateTimeFormat(navigator.language, {
-                            hour: '2-digit',
-                            minute: '2-digit',
-                            timeZone: userTimezone
-                        }).format(eventTime);
+                        const localTime = eventTime.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
 
-                        li.innerHTML = `🔥 <strong>${event.summary}</strong> - ⏰ ${localTime}`;
-                        if (index < 3) li.classList.add('show');
+                        li.innerHTML = `<strong>${event.summary}</strong> - ⏰ ${localTime}`;
                         eventsList.appendChild(li);
                     });
-
-                    document.getElementById('showMore').style.display = 'inline-block';
                 } else {
-                    eventsList.innerHTML = '<li class="show">No Events Today</li>';
+                    eventsList.innerHTML = '<li>No Events Today</li>';
                 }
             }).catch(error => {
                 console.error("Error fetching events:", error);
@@ -179,26 +157,18 @@
             const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
             const formattedDate = today.toLocaleDateString('en-US', options);
 
-            const todayTitle = document.getElementById("todayTitle");
-            todayTitle.innerHTML = `🔥 Fogo Events - ${formattedDate} 🔥`;
+            // 🔥 Random Warna Neon Setiap Buka Website
+            const neonColors = ["#ff5733", "#ff9900", "#ff4500", "#ffcc00", "#ff33cc"];
+            const randomColor = neonColors[Math.floor(Math.random() * neonColors.length)];
+            document.documentElement.style.setProperty('--neonColor', randomColor);
 
+            // 🔥 Update Judul H1
+            document.getElementById("todayTitle").innerHTML = `🔥 Fogo Events - ${formattedDate} 🔥`;
+
+            // 🔥 Update Calendar sesuai timezone user
             const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
             document.getElementById("calendarFrame").src = 
                 `https://calendar.google.com/calendar/embed?src=${CALENDAR_ID}&ctz=${encodeURIComponent(userTimezone)}`;
-
-            document.getElementById("showMore").addEventListener("click", function () {
-                document.querySelectorAll("#events li").forEach(li => li.classList.add('show'));
-                document.getElementById("showMore").style.display = "none";
-                document.getElementById("showLess").style.display = "inline-block";
-            });
-
-            document.getElementById("showLess").addEventListener("click", function () {
-                document.querySelectorAll("#events li").forEach((li, index) => {
-                    if (index >= 3) li.classList.remove('show');
-                });
-                document.getElementById("showMore").style.display = "inline-block";
-                document.getElementById("showLess").style.display = "none";
-            });
         });
     </script>
 </head>
@@ -206,14 +176,12 @@
 
     <h1 id="todayTitle">🔥 Fogo Events 🔥</h1>
 
-    <h2 id="eventsTitle">Today's Events</h2>
+    <h2>Today's Events</h2>
     <div id="eventsContainer">
         <ul id="events">Loading events...</ul>
-        <span id="showMore" style="display: none;">Lihat Semua</span>
-        <span id="showLess" style="display: none;">Sembunyikan</span>
     </div>
 
-    <h2 id="calendarTitle">Calendar</h2>
+    <h2>Calendar</h2>
     <iframe id="calendarFrame"></iframe>
 
     <p id="footer">Made with ❤️ by Intern</p>
