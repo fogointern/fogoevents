@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>🔥 Fogo Events 🔥</title>
 
-   <style>
+    <style>
         /* 🔥 Background Bergerak Lebih Smooth */
         @keyframes fireEffect {
             0% { background-position: 0% 50%; }
@@ -24,33 +24,20 @@
             text-align: center;
         }
 
-        /* 🔥 Efek Smoke + Neon untuk H1 */
-        @keyframes smokeEffect {
-            0% { text-shadow: 0px 0px 20px rgba(255, 140, 0, 0.9), 0px 0px 30px rgba(255, 69, 0, 0.8); opacity: 1; transform: translateY(0px) scale(1); filter: blur(0px); }
-            25% { text-shadow: 0px 0px 30px rgba(255, 165, 0, 1), 0px 0px 40px rgba(255, 99, 71, 0.9); opacity: 0.8; transform: translateY(-3px) scale(1.02); filter: blur(1px); }
-            50% { text-shadow: 0px 0px 40px rgba(255, 140, 0, 1), 0px 0px 50px rgba(255, 69, 0, 1); opacity: 0.6; transform: translateY(-5px) scale(1.03); filter: blur(2px); }
-            75% { text-shadow: 0px 0px 30px rgba(255, 140, 0, 0.9), 0px 0px 40px rgba(255, 69, 0, 0.8); opacity: 0.8; transform: translateY(-3px) scale(1.02); filter: blur(1px); }
-            100% { text-shadow: 0px 0px 20px rgba(255, 140, 0, 0.9), 0px 0px 30px rgba(255, 69, 0, 0.8); opacity: 1; transform: translateY(0px) scale(1); filter: blur(0px); }
-        }
-
+        /* 🔥 Efek Glow Neon */
         #todayTitle {
             font-size: 42px;
             font-weight: bold;
             padding: 20px;
             text-transform: uppercase;
             letter-spacing: 2px;
-            color: #ff4500;
-            animation: smokeEffect 5s infinite ease-in-out;
         }
 
-        /* 🔥 Neon Putih yang Lebih Glowing */
+        /* 🔥 Teks Event dan Calendar */
         #eventsTitle, #calendarTitle {
             font-size: 26px;
             font-weight: 600;
-            color: #ffffff;
-            text-shadow: 0px 0px 10px rgba(255, 255, 255, 0.9), 
-                         0px 0px 20px rgba(255, 255, 255, 0.7),
-                         0px 0px 30px rgba(255, 255, 255, 0.5);
+            color: #FFD700;
         }
 
         /* 🔥 List Event dalam Kotak */
@@ -90,6 +77,24 @@
             transform: translateY(0);
         }
 
+        /* 🔥 Tombol Lihat Semua */
+        #showMore, #showLess {
+            cursor: pointer;
+            background: #ff4500;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 5px;
+            display: inline-block;
+            margin-top: 15px;
+            transition: 0.3s ease-in-out;
+            font-weight: bold;
+        }
+
+        #showMore:hover, #showLess:hover {
+            background: #ff7700;
+            transform: scale(1.1);
+        }
+
         /* 🔥 Frame Kalender */
         #calendarFrame {
             width: 90%;
@@ -97,6 +102,13 @@
             border: 0;
             box-shadow: 0px 0px 30px rgba(255, 69, 0, 0.7);
             border-radius: 10px;
+        }
+
+        /* 🔥 Made with Love */
+        #footer {
+            margin-top: 20px;
+            font-size: 16px;
+            color: #ff5733;
         }
 
         /* 🔥 Responsive Calendar di Desktop */
@@ -148,7 +160,7 @@
                             timeZone: userTimezone
                         }).format(eventTime);
 
-                        li.innerHTML = 🔥 <strong>${event.summary}</strong> - ⏰ ${localTime};
+                        li.innerHTML = `🔥 <strong>${event.summary}</strong> - ⏰ ${localTime}`;
                         if (index < 3) li.classList.add('show');
                         eventsList.appendChild(li);
                     });
@@ -168,11 +180,11 @@
             const formattedDate = today.toLocaleDateString('en-US', options);
 
             const todayTitle = document.getElementById("todayTitle");
-            todayTitle.innerHTML = 🔥 Fogo Events - ${formattedDate} 🔥;
+            todayTitle.innerHTML = `🔥 Fogo Events - ${formattedDate} 🔥`;
 
             const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
             document.getElementById("calendarFrame").src = 
-                https://calendar.google.com/calendar/embed?src=${CALENDAR_ID}&ctz=${encodeURIComponent(userTimezone)};
+                `https://calendar.google.com/calendar/embed?src=${CALENDAR_ID}&ctz=${encodeURIComponent(userTimezone)}`;
 
             document.getElementById("showMore").addEventListener("click", function () {
                 document.querySelectorAll("#events li").forEach(li => li.classList.add('show'));
