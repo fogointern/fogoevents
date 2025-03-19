@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚡ Fogo Events ⚡</title>
+    <title> Fogo Events ⚡</title>
 
     <style>
         /* 🔥 Background Bergerak (Oranye & Hitam) */
@@ -25,10 +25,10 @@
         }
 
         /* 🔥 Efek Neon untuk Judul */
-        @keyframes neonGlow {
-            0% { text-shadow: 0 0 10px #ff4500, 0 0 20px #ff5733, 0 0 30px #ff7700; }
-            50% { text-shadow: 0 0 15px #ff5733, 0 0 25px #ff7700, 0 0 35px #ff9900; }
-            100% { text-shadow: 0 0 10px #ff4500, 0 0 20px #ff5733, 0 0 30px #ff7700; }
+        @keyframes neonColor {
+            0% { color: #ff4500; text-shadow: 0 0 10px #ff4500, 0 0 20px #ff5733, 0 0 30px #ff7700; }
+            50% { color: #ffcc00; text-shadow: 0 0 15px #ffcc00, 0 0 25px #ff9900, 0 0 35px #ff5500; }
+            100% { color: #ff4500; text-shadow: 0 0 10px #ff4500, 0 0 20px #ff5733, 0 0 30px #ff7700; }
         }
 
         #todayTitle {
@@ -36,8 +36,7 @@
             font-weight: bold;
             padding: 20px;
             border-radius: 10px;
-            animation: neonGlow 2s infinite alternate;
-            color: #ff9900;
+            animation: neonColor 3s infinite alternate;
             text-transform: uppercase;
             letter-spacing: 2px;
         }
@@ -47,7 +46,7 @@
             font-weight: bold;
             margin-top: 20px;
             text-transform: uppercase;
-            animation: neonGlow 2s infinite alternate;
+            animation: neonColor 3s infinite alternate;
         }
 
         /* 🔥 Event List Neon */
@@ -90,23 +89,21 @@
             font-size: 26px;
             font-weight: bold;
             margin-top: 20px;
-            color: #ffcc00;
-            text-shadow: 0 0 10px #ff9900, 0 0 20px #ff7700;
+            animation: neonColor 3s infinite alternate;
         }
 
         /* 🔥 Footer */
         #footer {
             font-size: 18px;
             margin-top: 30px;
-            color: #ffcc00;
-            text-shadow: 0 0 10px #ff9900, 0 0 20px #ff7700;
+            animation: neonColor 3s infinite alternate;
         }
     </style>
 
     <script defer src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
     <script>
-        const API_KEY = 'AIzaSyDjVXwUbLWZv052kRzAXmjvxEWTGuY7BLw'; 
-        const CALENDAR_ID = '287026a99cb10f73790c5dbcebfc76a12e564079e02f3b3be161b752b7d78f56@group.calendar.google.com';  
+         const API_KEY = 'AIzaSyDjVXwUbLWZv052kRzAXmjvxEWTGuY7BLw'; 
+        const CALENDAR_ID = '287026a99cb10f73790c5dbcebfc76a12e564079e02f3b3be161b752b7d78f56@group.calendar.google.com'; 
 
         function gapiLoaded() {
             gapi.load('client', loadClient);
@@ -168,7 +165,7 @@
     <ul id="events">Loading events...</ul>
 
     <!-- 🔥 Google Calendar -->
-    <h2 id="calendarTitle">📅 Calendar 📅</h2>
+    <h2 id="calendarTitle"> Calendar </h2>
     <iframe id="calendarFrame" style="border: 0" width="90%" height="600" frameborder="0" scrolling="no"></iframe>
 
     <!-- 🔥 Footer -->
