@@ -24,26 +24,27 @@
             text-align: center;
         }
 
-        /* 🔥 Efek Warna Acak untuk H1 */
-        #todayTitle {
-            font-size: 42px;
-            font-weight: bold;
-            padding: 20px;
-            text-transform: uppercase;
-            letter-spacing: 2px;
-            transition: color 0.5s ease-in-out;
-        }
+        /* 🔥 Efek Warna Acak untuk H1 Setiap Kali Dibuka */
+    #todayTitle {
+        font-size: 42px;
+        font-weight: bold;
+        padding: 20px;
+        text-transform: uppercase;
+        letter-spacing: 2px;
+        transition: color 0.5s ease-in-out;
+    }
 
-        /* 🔥 Efek Neon untuk H2 */
-        #eventsTitle, #calendarTitle {
-            font-size: 26px;
-            font-weight: 600;
-            animation: neonGlow 1.5s infinite alternate;
-        }
+    /* 🔥 Efek Neon yang Lebih Keren untuk H2 */
+    @keyframes neonGlow {
+        0% { text-shadow: 0 0 5px #FFD700, 0 0 10px #FF4500, 0 0 15px #FF7700; }
+        50% { text-shadow: 0 0 10px #FF4500, 0 0 20px #FF7700, 0 0 30px #FF0000; }
+        100% { text-shadow: 0 0 5px #FFD700, 0 0 10px #FF4500, 0 0 15px #FF7700; }
+    }
 
-        @keyframes neonGlow {
-            0% { text-shadow: 0 0 5px #FFD700, 0 0 10px #FF4500, 0 0 15px #FF7700; }
-            100% { text-shadow: 0 0 10px #FF4500, 0 0 20px #FF7700, 0 0 30px #FF0000; }
+    #eventsTitle, #calendarTitle {
+        font-size: 26px;
+        font-weight: 600;
+        animation: neonGlow 2s infinite alternate;
         }
 
         /* 🔥 List Event dalam Kotak */
@@ -127,21 +128,26 @@
 
     <script defer src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
     <script>
+        const API_KEY = 'AIzaSyDjVXwUbLWZv052kRzAXmjvxEWTGuY7BLw';
+        const CALENDAR_ID = '287026a99cb10f73790c5dbcebfc76a12e564079e02f3b3be161b752b7d78f56@group.calendar.google.com';
+
         function gapiLoaded() {
             gapi.load('client', loadClient);
         }
 
         function loadClient() {
             gapi.client.init({
-                apiKey: 'AIzaSyDjVXwUbLWZv052kRzAXmjvxEWTGuY7BLw',
+                apiKey: API_KEY,
                 discoveryDocs: ["https://www.googleapis.com/discovery/v1/apis/calendar/v3/rest"]
             }).then(() => getEvents());
         }
 
         function getEvents() {
             const now = new Date();
+            const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+
             gapi.client.calendar.events.list({
-                'calendarId': '287026a99cb10f73790c5dbcebfc76a12e564079e02f3b3be161b752b7d78f56@group.calendar.google.com',
+                'calendarId': CALENDAR_ID,
                 'timeMin': now.toISOString(),
                 'showDeleted': false,
                 'singleEvents': true,
@@ -154,7 +160,14 @@
                 if (events.length > 0) {
                     events.forEach((event, index) => {
                         const li = document.createElement('li');
-                        li.innerHTML = `🔥 <strong>${event.summary}</strong>`;
+                        const eventTime = new Date(event.start.dateTime || event.start.date);
+                        const localTime = new Intl.DateTimeFormat(navigator.language, {
+                            hour: '2-digit',
+                            minute: '2-digit',
+                            timeZone: userTimezone
+                        }).format(eventTime);
+
+                        li.innerHTML = `🔥 <strong>${event.summary}</strong> - ⏰ ${localTime}`;
                         if (index < 3) li.classList.add('show');
                         eventsList.appendChild(li);
                     });
@@ -163,30 +176,42 @@
                 } else {
                     eventsList.innerHTML = '<li class="show">No Events Today</li>';
                 }
-            }).catch(error => console.error("Error fetching events:", error));
+            }).catch(error => {
+                console.error("Error fetching events:", error);
+            });
         }
 
-        document.addEventListener("DOMContentLoaded", function () {
-            const today = new Date();
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            const formattedDate = today.toLocaleDateString('en-US', options);
+       document.addEventListener("DOMContentLoaded", function () {
+        const today = new Date();
+        const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+        const formattedDate = today.toLocaleDateString('en-US', options);
 
-            // Array teks acak untuk H1
-            const titleVariants = [
-                "🔥 Fogo Events - Stay Lit! 🔥",
-                "🔥 Don't Miss Out - Fogo Events 🔥",
-                "🔥 Hottest Events Today 🔥",
-                "🔥 Get Ready! Fogo Events 🔥"
-            ];
+        // Array warna acak untuk H1
+        const colors = ["#FF5733", "#FFC300", "#DAF7A6", "#C70039", "#581845"];
+        const randomColor = colors[Math.floor(Math.random() * colors.length)];
 
-            // Pilih teks secara acak
-            const randomTitle = titleVariants[Math.floor(Math.random() * titleVariants.length)];
-            const todayTitle = document.getElementById("todayTitle");
-            todayTitle.innerHTML = `${randomTitle} - ${formattedDate}`;
+        // Set teks dan warna H1
+        const todayTitle = document.getElementById("todayTitle");
+        todayTitle.innerHTML = `🔥 Fogo Events - ${formattedDate} 🔥`;
+        todayTitle.style.color = randomColor;
 
-            // Warna acak untuk H1
-            const randomColor = `rgb(${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)}, ${Math.floor(Math.random() * 256)})`;
-            todayTitle.style.color = randomColor;
+            const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+            document.getElementById("calendarFrame").src = 
+                `https://calendar.google.com/calendar/embed?src=${CALENDAR_ID}&ctz=${encodeURIComponent(userTimezone)}`;
+
+            document.getElementById("showMore").addEventListener("click", function () {
+                document.querySelectorAll("#events li").forEach(li => li.classList.add('show'));
+                document.getElementById("showMore").style.display = "none";
+                document.getElementById("showLess").style.display = "inline-block";
+            });
+
+            document.getElementById("showLess").addEventListener("click", function () {
+                document.querySelectorAll("#events li").forEach((li, index) => {
+                    if (index >= 3) li.classList.remove('show');
+                });
+                document.getElementById("showMore").style.display = "inline-block";
+                document.getElementById("showLess").style.display = "none";
+            });
         });
     </script>
 </head>
