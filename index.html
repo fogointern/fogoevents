@@ -24,46 +24,48 @@
             text-align: center;
         }
 
-       /* 🔥 Efek Api Menyala pada H1 */
+       /* 🔥 Animasi Gradient Bergerak Lebih Halus */
+@keyframes fireText {
+    0% { background-position: 0% 50%; opacity: 0.9; }
+    50% { background-position: 100% 50%; opacity: 1; }
+    100% { background-position: 0% 50%; opacity: 0.9; }
+}
+
+/* 🔥 Efek Glow Lebih Smooth */
 @keyframes fireGlow {
-    0% { text-shadow: 0 0 10px #ff4500, 0 0 20px #ff5733, 0 0 30px #ff7700; }
-    50% { text-shadow: 0 0 15px #ff5733, 0 0 25px #ff7700, 0 0 35px #ff9900; }
-    100% { text-shadow: 0 0 10px #ff4500, 0 0 20px #ff5733, 0 0 30px #ff7700; }
+    0% { text-shadow: 0 0 5px #ff4500, 0 0 10px #ff5733, 0 0 15px #ff7700; }
+    50% { text-shadow: 0 0 10px #ff5733, 0 0 20px #ff7700, 0 0 30px #ff9900; }
+    100% { text-shadow: 0 0 5px #ff4500, 0 0 10px #ff5733, 0 0 15px #ff7700; }
 }
 
-@keyframes floatingEffect {
-    0% { transform: translateY(0); }
-    50% { transform: translateY(-5px); }
-    100% { transform: translateY(0); }
-}
-
+/* 🔥 Styling H1 agar lebih jelas dan smooth */
 #todayTitle {
-  
-    position: relative;
-    z-index: 10;
-    font-size: 50px;
+    font-size: 52px;
     font-weight: 900;
     text-transform: uppercase;
     letter-spacing: 4px;
+    padding: 20px;
+    text-align: center;
     background: linear-gradient(90deg, #ff4500, #ff5733, #ff9900);
-    background-size: 200% 200%;
+    background-size: 300% 300%;
     -webkit-background-clip: text;
     -webkit-text-fill-color: transparent;
-    animation: fireGlow 1.5s infinite alternate, floatingEffect 3s infinite ease-in-out;
-    transition: transform 0.3s ease-in-out;
+    position: relative;
+    animation: fireText 3s infinite alternate, fireGlow 2s infinite alternate;
 }
 
-/* 🔥 Hover Effect */
+/* 🔥 Efek Hover Lebih Halus */
 #todayTitle:hover {
-    transform: scale(1.1) rotate(2deg);
-    text-shadow: 0 0 20px #ff5733, 0 0 30px #ff9900, 0 0 40px #ffcc00;
+    transform: scale(1.05);
+    transition: transform 0.4s ease-in-out;
+    text-shadow: 0 0 15px rgba(255, 69, 0, 1), 0 0 25px rgba(255, 140, 0, 1);
 }
 
     /* 🔥 Efek Neon yang Lebih Keren untuk H2 */
     @keyframes neonGlow {
-    0% { text-shadow: 0 0 3px #FFD700, 0 0 6px #FF4500; }
-    50% { text-shadow: 0 0 6px #FF4500, 0 0 12px #FF7700; }
-    100% { text-shadow: 0 0 3px #FFD700, 0 0 6px #FF4500; }
+        0% { text-shadow: 0 0 5px #FFD700, 0 0 10px #FF4500, 0 0 15px #FF7700; }
+        50% { text-shadow: 0 0 10px #FF4500, 0 0 20px #FF7700, 0 0 30px #FF0000; }
+        100% { text-shadow: 0 0 5px #FFD700, 0 0 10px #FF4500, 0 0 15px #FF7700; }
     }
 
     #eventsTitle, #calendarTitle {
@@ -71,25 +73,6 @@
         font-weight: 600;
         animation: neonGlow 2s infinite alternate;
         }
-        /* 🔥 Efek Asap yang Muncul di Belakang Teks */
-@keyframes smokeEffect {
-    0% { opacity: 0.1; transform: translateY(0) scale(1); }
-    50% { opacity: 0.3; transform: translateY(-10px) scale(1.1); }
-    100% { opacity: 0; transform: translateY(-20px) scale(1.2); }
-}
-
-.smoke {
-    position: absolute;
-    width: 120px;
-    height: 60px;
-    background: radial-gradient(circle, rgba(255,255,255,0.2) 10%, rgba(0,0,0,0) 70%);
-    top: 50%;
-    left: 50%;
-    opacity: 0;
-    animation: smokeEffect 2s infinite ease-in-out;
-    pointer-events: none; /* Biar tidak mengganggu teks */
-}
-
 
         /* 🔥 List Event dalam Kotak */
         #eventsContainer {
@@ -187,21 +170,20 @@
         }
 
         function getEvents() {
-            const now = new Date();
+    const now = new Date();
     const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-    // Konversi waktu lokal pengguna ke format ISO dengan timezone yang sesuai
     const todayStart = new Date();
-    todayStart.setHours(0, 0, 0, 0); // Set ke awal hari ini di timezone pengguna
+    todayStart.setHours(0, 0, 0, 0);
 
     const todayEnd = new Date();
-    todayEnd.setHours(23, 59, 59, 999); // Set ke akhir hari ini di timezone pengguna
+    todayEnd.setHours(23, 59, 59, 999);
 
     gapi.client.calendar.events.list({
         'calendarId': CALENDAR_ID,
-        'timeMin': todayStart.toISOString(), // Mulai dari 00:00 hari ini
-        'timeMax': todayEnd.toISOString(),   // Sampai 23:59 hari ini
-        'timeZone': userTimezone,            // Pastikan sesuai timezone pengguna
+        'timeMin': todayStart.toISOString(),
+        'timeMax': todayEnd.toISOString(),
+        'timeZone': userTimezone,  // Pastikan API membaca timezone pengguna
         'showDeleted': false,
         'singleEvents': true,
         'orderBy': 'startTime'
@@ -210,32 +192,38 @@
         const eventsList = document.getElementById('events');
         eventsList.innerHTML = '';
 
-        if (events.length > 0) {
-            events.forEach((event, index) => {
-                const eventTime = new Date(event.start.dateTime || event.start.date);
+        let eventCount = 0;
 
+        events.forEach(event => {
+            let eventTimeUTC = new Date(event.start.dateTime || event.start.date);
+
+            // **Konversi Waktu Event ke Timezone Pengguna**
+            let eventTimeLocal = new Date(eventTimeUTC.toLocaleString("en-US", { timeZone: userTimezone }));
+
+            // **FILTER: Hanya tampilkan event yang belum terjadi**
+            if (eventTimeLocal >= now) {
                 const li = document.createElement('li');
-                const localTime = new Intl.DateTimeFormat(navigator.language, {
+                const formattedTime = new Intl.DateTimeFormat(navigator.language, {
                     hour: '2-digit',
                     minute: '2-digit',
-                    timeZone: userTimezone // Format jam sesuai timezone pengguna
-                }).format(eventTime);
+                    timeZone: userTimezone  // Format jam sesuai timezone pengguna
+                }).format(eventTimeLocal);
 
-                li.innerHTML = `🔥 <strong>${event.summary}</strong> - ⏰ ${localTime}`;
-                if (index < 3) li.classList.add('show');
+                li.innerHTML = `🔥 <strong>${event.summary}</strong> - ⏰ ${formattedTime}`;
+                li.classList.add('show');
                 eventsList.appendChild(li);
-            });
-
-            if (eventsList.children.length === 0) {
-                eventsList.innerHTML = '<li class="show">No Events Today</li>';
-            } else {
-                document.getElementById('showMore').style.display = 'inline-block';
+                eventCount++;
             }
-        } else {
-            eventsList.innerHTML = '<li class="show">No Events Today</li>';
+        });
+
+        // Jika tidak ada event yang tersisa setelah filter, tampilkan pesan
+        if (eventCount === 0) {
+            eventsList.innerHTML = '<li class="show">✅ Tidak ada event yang tersisa hari ini</li>';
         }
+
     }).catch(error => {
         console.error("Error fetching events:", error);
+        document.getElementById('events').innerHTML = '<li class="show">❌ Gagal memuat event</li>';
     });
         }
 
@@ -275,7 +263,7 @@
 </head>
 <body>
 
-    <h1 id="todayTitle">🔥 Fogo Events 🔥<span class="smoke"></span></h1>
+    <h1 id="todayTitle">🔥 Fogo Events 🔥</h1>
 
     <h2 id="eventsTitle">Today's Events</h2>
     <div id="eventsContainer">
