@@ -41,14 +41,14 @@
             letter-spacing: 2px;
         }
 
-        /* 🔥 H2 Neon Elegan */
+        /* 🔥 H2 Elegan (Tidak Terlalu Tebal) */
         #eventsTitle, #calendarTitle {
-            font-size: 28px;
-            font-weight: bold;
+            font-size: 26px;
+            font-weight: 500; /* Lebih tipis dari sebelumnya */
             margin-top: 20px;
             text-transform: uppercase;
-            color: #ffcc00;
-            text-shadow: 0 0 10px #ffcc00, 0 0 20px #ff9900;
+            color: #ffbb44;
+            text-shadow: 0 0 8px #ff9900;
         }
 
         /* 🔥 List Event dalam Kotak Interaktif */
@@ -87,7 +87,7 @@
             border-color: #ffd700;
         }
 
-        /* 🔥 Style Kalender dengan Border Neon */
+        /* 🔥 Frame Kalender dengan Gradasi Smooth */
         #calendarContainer {
             display: flex;
             justify-content: center;
@@ -98,15 +98,24 @@
         #calendarFrame {
             width: 90%;
             height: 600px;
-            border: 5px solid #ffcc00;
+            border: 6px solid transparent;
             border-radius: 15px;
-            box-shadow: 0 0 20px rgba(255, 140, 0, 0.9), 0 0 40px rgba(255, 100, 0, 0.6);
+            background: linear-gradient(45deg, #ff5500, #ff0000);
+            padding: 3px; /* Untuk efek border gradasi */
+            box-shadow: 0 0 20px rgba(255, 100, 0, 0.9), 0 0 40px rgba(255, 50, 0, 0.6);
             transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+
+        #calendarFrame iframe {
+            width: 100%;
+            height: 100%;
+            border-radius: 12px;
+            background-color: black;
         }
 
         #calendarFrame:hover {
             transform: scale(1.02);
-            box-shadow: 0 0 30px rgba(255, 180, 0, 1), 0 0 50px rgba(255, 120, 0, 0.8);
+            box-shadow: 0 0 30px rgba(255, 120, 0, 1), 0 0 50px rgba(255, 50, 0, 0.8);
         }
 
         /* 🔥 Footer */
@@ -121,6 +130,7 @@
     <script>
          const API_KEY = 'AIzaSyDjVXwUbLWZv052kRzAXmjvxEWTGuY7BLw'; 
         const CALENDAR_ID = '287026a99cb10f73790c5dbcebfc76a12e564079e02f3b3be161b752b7d78f56@group.calendar.google.com'; 
+
         function gapiLoaded() {
             gapi.load('client', loadClient);
         }
@@ -180,14 +190,16 @@
 
     <h2 id="calendarTitle">📅 Calendar 📅</h2>
     <div id="calendarContainer">
-        <iframe id="calendarFrame" frameborder="0" scrolling="no"></iframe>
+        <div id="calendarFrame">
+            <iframe frameborder="0" scrolling="no"></iframe>
+        </div>
     </div>
 
     <div id="footer">Made with ❤️ by Irwan</div>
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            document.getElementById("calendarFrame").src = 
+            document.querySelector("#calendarFrame iframe").src = 
                 `https://calendar.google.com/calendar/embed?src=${CALENDAR_ID}`;
         });
     </script>
