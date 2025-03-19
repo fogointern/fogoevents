@@ -6,11 +6,11 @@
     <title>⚡ Fogo Events ⚡</title>
 
     <style>
-        /* 🔥 Background bergerak smooth (Orange - Merah - Hitam) */
+        /* 🔥 Background bergerak smooth (Orange Soft - Merah - Hitam) */
         @keyframes smoothFireBackground {
             0% { background: #0a0a0a; }
-            50% { background: #441500; }
-            100% { background: #ff5500; }
+            50% { background: #332015; } /* Orange yang lebih soft */
+            100% { background: #661a00; }
         }
 
         body {
@@ -40,11 +40,11 @@
             letter-spacing: 2px;
         }
 
-        /* 🔥 Teks Event dan Calendar lebih tebal & warna lebih jelas */
+        /* 🔥 Teks Event dan Calendar */
         #eventsTitle, #calendarTitle {
             font-size: 26px;
-            font-weight: 600; /* Lebih tebal sedikit */
-            color: #FFD700; /* Gold terang, lebih terlihat */
+            font-weight: 600;
+            color: #FFD700;
             margin-top: 20px;
             text-transform: uppercase;
         }
@@ -60,36 +60,28 @@
             font-weight: bold;
             padding: 15px;
             margin: 10px auto;
-            background: linear-gradient(90deg, #220b05, #ff4500, #ff7700);
+            background: linear-gradient(90deg, #220b05, #ff5500, #ff9900);
             color: white;
             border-radius: 15px;
             max-width: 600px;
             text-align: center;
-            border: 2px solid #FFD700; /* Gold */
+            border: 2px solid #FFD700;
             box-shadow: 0px 0px 15px rgba(255, 140, 0, 0.6);
             transition: transform 0.4s ease-in-out, box-shadow 0.4s ease-in-out;
         }
 
-        /* 🔥 Hover dengan efek api neon */
-        @keyframes flameHover {
-            0% { background: linear-gradient(90deg, #330b05, #ff5500, #ffaa00); }
-            50% { background: linear-gradient(90deg, #440b05, #ff6600, #ffbb00); }
-            100% { background: linear-gradient(90deg, #330b05, #ff5500, #ffaa00); }
-        }
-
+        /* 🔥 Hover Efek */
         #events li:hover {
             transform: scale(1.05);
-            animation: flameHover 1s infinite alternate;
+            background: linear-gradient(90deg, #440b05, #ff7700, #ffaa00);
             box-shadow: 0px 0px 25px rgba(255, 140, 0, 1);
         }
 
-        /* 🔥 Frame Kalender lebih smooth */
+        /* 🔥 Frame Kalender dengan Shadow Glow */
         #calendarFrame {
-            border: 3px solid transparent;
             border-radius: 15px;
             padding: 5px;
-            box-shadow: 0px 0px 25px rgba(255, 69, 0, 0.7);
-            background: linear-gradient(45deg, #ff4500, #ff2200);
+            box-shadow: 0px 0px 40px rgba(255, 69, 0, 0.5); /* Efek shadow glowing */
         }
     </style>
 
