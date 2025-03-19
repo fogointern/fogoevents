@@ -7,31 +7,23 @@
 
     <style>
         /* 🔥 Background Bergerak Lebih Smooth */
-        @keyframes fireEffect {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
+       @keyframes neonGlow {
+    0% { text-shadow: 0 0 5px #FFD700, 0 0 10px #FFA500, 0 0 15px #FF8C00; }
+    50% { text-shadow: 0 0 10px #FFD700, 0 0 20px #FFA500, 0 0 30px #FF4500; }
+    100% { text-shadow: 0 0 5px #FFD700, 0 0 10px #FFA500, 0 0 15px #FF8C00; }
+}
 
-        body {
-            background: linear-gradient(-45deg, #0a0a0a, #290f0f, #662200, #0a0a0a);
-            background-size: 400% 400%;
-            animation: fireEffect 12s infinite linear;
-            color: white;
-            font-family: 'Poppins', sans-serif;
-            margin: 0;
-            padding: 0;
-            text-align: center;
-        }
-
-  #todayTitle {
-    font-size: 42px;
+#todayTitle {
+    font-size: 48px;
     font-weight: bold;
     padding: 20px;
     text-transform: uppercase;
     letter-spacing: 2px;
     color: #FFA500; /* Orange */
-    text-shadow: 0 0 10px #FFD700, 0 0 20px #FFA500, 0 0 30px #FF8C00;
+    background: linear-gradient(90deg, #FFD700, #FFA500, #FF8C00);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    animation: neonGlow 1.5s infinite alternate ease-in-out;
 }
 
 /* 🔥 H2 Neon White + Shadow */
@@ -44,8 +36,8 @@
 
 /* 🔥 Calendar Title Neon Red */
 #calendarTitle {
-    color: #FF0000; /* Red */
-    text-shadow: 0 0 10px #FF0000, 0 0 20px #CC0000;
+    color: #FFFFFF; /* White */
+    text-shadow: 0 0 10px #FFFFFF, 0 0 20px #CCCCCC;
 }
 
         /* 🔥 List Event dalam Kotak */
