@@ -136,43 +136,53 @@
         }
 
         function getEvents() {
-            const now = new Date();
-            const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        const now = new Date();
+        const todayStr = now.toISOString().split('T')[0]; // Format YYYY-MM-DD
+        const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
-            gapi.client.calendar.events.list({
-                'calendarId': CALENDAR_ID,
-                'timeMin': now.toISOString(),
-                'showDeleted': false,
-                'singleEvents': true,
-                'orderBy': 'startTime'
-            }).then(response => {
-                const events = response.result.items;
-                const eventsList = document.getElementById('events');
-                eventsList.innerHTML = '';
+        gapi.client.calendar.events.list({
+            'calendarId': CALENDAR_ID,
+            'timeMin': now.toISOString(),
+            'showDeleted': false,
+            'singleEvents': true,
+            'orderBy': 'startTime'
+        }).then(response => {
+            const events = response.result.items;
+            const eventsList = document.getElementById('events');
+            eventsList.innerHTML = '';
 
-                if (events.length > 0) {
-                    events.forEach((event, index) => {
-                        const li = document.createElement('li');
-                        const eventTime = new Date(event.start.dateTime || event.start.date);
-                        const localTime = new Intl.DateTimeFormat(navigator.language, {
-                            hour: '2-digit',
-                            minute: '2-digit',
-                            timeZone: userTimezone
-                        }).format(eventTime);
+            let count = 0;
 
-                        li.innerHTML = `🔥 <strong>${event.summary}</strong> - ⏰ ${localTime}`;
-                        if (index < 3) li.classList.add('show');
-                        eventsList.appendChild(li);
-                    });
+            events.forEach((event) => {
+                const eventTime = new Date(event.start.dateTime || event.start.date);
+                const eventDateStr = eventTime.toISOString().split('T')[0]; // Format YYYY-MM-DD
 
-                    document.getElementById('showMore').style.display = 'inline-block';
-                } else {
-                    eventsList.innerHTML = '<li class="show">No Events Today</li>';
+                // Filter: Hanya event hari ini dan yang belum lewat
+                if (eventDateStr === todayStr && eventTime > now) {
+                    const li = document.createElement('li');
+                    const localTime = new Intl.DateTimeFormat(navigator.language, {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        timeZone: userTimezone
+                    }).format(eventTime);
+
+                    li.innerHTML = `🔥 <strong>${event.summary}</strong> - ⏰ ${localTime}`;
+                    if (count < 3) li.classList.add('show');
+                    eventsList.appendChild(li);
+                    count++;
                 }
-            }).catch(error => {
-                console.error("Error fetching events:", error);
             });
-        }
+
+            // Jika tidak ada event yang valid
+            if (count === 0) {
+                eventsList.innerHTML = '<li class="show">Tidak ada acara hari ini 😴</li>';
+            } else {
+                document.getElementById('showMore').style.display = 'inline-block';
+            }
+        }).catch(error => {
+            console.error("Error fetching events:", error);
+        });
+    }
 
         document.addEventListener("DOMContentLoaded", function () {
             const today = new Date();
