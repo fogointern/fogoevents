@@ -6,17 +6,17 @@
     <title>🔥 Fogo Events 🔥</title>
 
     <style>
-        /* 🔥 Background Bergerak dengan Lighting Efek */
+        /* 🔥 Background Bergerak Smooth */
         @keyframes fireBackground {
             0% { background: #0a0a0a; }
-            50% { background: #331100; box-shadow: 0 0 50px rgba(255, 100, 0, 0.2); }
+            50% { background: #221100; box-shadow: 0 0 30px rgba(255, 100, 0, 0.3); }
             100% { background: #0a0a0a; }
         }
 
         body {
-            background: linear-gradient(90deg, #0a0a0a, #331100, #0a0a0a);
+            background: linear-gradient(90deg, #0a0a0a, #221100, #0a0a0a);
             background-size: 400% 400%;
-            animation: fireBackground 10s infinite alternate ease-in-out;
+            animation: fireBackground 8s infinite alternate ease-in-out;
             color: white;
             font-family: 'Poppins', sans-serif;
             margin: 0;
@@ -24,7 +24,7 @@
             text-align: center;
         }
 
-        /* 🔥 Efek Glow Neon untuk H1 */
+        /* 🔥 Efek Neon untuk Judul */
         @keyframes neonGlow {
             0% { text-shadow: 0 0 10px #ff4500, 0 0 20px #ff5733; }
             50% { text-shadow: 0 0 15px #ff5733, 0 0 25px #ff7700; }
@@ -41,23 +41,15 @@
             letter-spacing: 2px;
         }
 
-        /* 🔥 Efek Neon untuk "Today's Events" */
-        @keyframes neonGlowEvents {
-            0% { text-shadow: 0 0 8px #FFD700, 0 0 12px #FFAA00; }
-            50% { text-shadow: 0 0 12px #FFA500, 0 0 18px #FF4500; }
-            100% { text-shadow: 0 0 8px #FFD700, 0 0 12px #FFAA00; }
-        }
-
+        /* 🔥 Neon untuk Today's Events */
         #eventsTitle {
             font-size: 28px;
-            font-weight: 800;
+            font-weight: bold;
             color: #FFD700;
-            animation: neonGlowEvents 2s infinite alternate;
-            text-transform: uppercase;
-            letter-spacing: 2px;
+            text-shadow: 0 0 10px #FFD700, 0 0 20px #FFAA00;
         }
 
-        /* 🔥 List Event */
+        /* 🔥 Styling List Event */
         #eventsContainer {
             padding: 10px;
             border-radius: 10px;
@@ -66,6 +58,11 @@
             margin: auto;
             width: 90%;
             max-width: 600px;
+        }
+
+        #events {
+            list-style: none; /* 🔥 Hapus titik • pada list */
+            padding: 0;
         }
 
         .event-item {
@@ -87,8 +84,8 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* 🔥 Button Animasi */
-        button {
+        /* 🔥 Tombol Animasi */
+        .toggle-btn {
             background: linear-gradient(90deg, #ff4500, #ff7700);
             color: white;
             border: none;
@@ -97,10 +94,11 @@
             font-weight: bold;
             border-radius: 5px;
             cursor: pointer;
+            margin-top: 15px;
             transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
         }
 
-        button:hover {
+        .toggle-btn:hover {
             transform: scale(1.1);
             box-shadow: 0 0 15px rgba(255, 140, 0, 0.8);
         }
@@ -112,13 +110,14 @@
             border: 0;
             box-shadow: 0px 0px 30px rgba(255, 69, 0, 0.7);
             border-radius: 10px;
+            margin-top: 20px;
         }
 
     </style>
 
     <script defer src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
     <script>
-         const API_KEY = 'AIzaSyDjVXwUbLWZv052kRzAXmjvxEWTGuY7BLw'; 
+       const API_KEY = 'AIzaSyDjVXwUbLWZv052kRzAXmjvxEWTGuY7BLw'; 
         const CALENDAR_ID = '287026a99cb10f73790c5dbcebfc76a12e564079e02f3b3be161b752b7d78f56@group.calendar.google.com';
 
         function gapiLoaded() {
@@ -172,15 +171,34 @@
         document.addEventListener("DOMContentLoaded", function () {
             const today = new Date();
             document.getElementById("todayTitle").innerHTML = `🔥 Fogo Events - ${today.toDateString()} 🔥`;
+            document.getElementById("calendarFrame").src = 
+                `https://calendar.google.com/calendar/embed?src=${CALENDAR_ID}&ctz=${encodeURIComponent(Intl.DateTimeFormat().resolvedOptions().timeZone)}`;
         });
+
+        function toggleEvents() {
+            const eventsContainer = document.getElementById("eventsContainer");
+            const button = document.getElementById("toggleButton");
+
+            if (eventsContainer.style.display === "none") {
+                eventsContainer.style.display = "block";
+                button.textContent = "Sembunyikan";
+            } else {
+                eventsContainer.style.display = "none";
+                button.textContent = "Tampilkan Semua";
+            }
+        }
     </script>
 </head>
 <body>
     <h1 id="todayTitle">🔥 Fogo Events 🔥</h1>
     <h2 id="eventsTitle">Today's Events</h2>
+
     <div id="eventsContainer">
         <ul id="events">Loading events...</ul>
     </div>
+
+    <button id="toggleButton" class="toggle-btn" onclick="toggleEvents()">Sembunyikan</button>
+
     <h2>Calendar</h2>
     <iframe id="calendarFrame"></iframe>
 </body>
