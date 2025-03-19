@@ -6,7 +6,6 @@
     <title>🔥 Fogo Events 🔥</title>
 
     <style>
-        /* 🔥 Efek Glow Neon untuk Judul */
         @keyframes neonGlow {
             0% { text-shadow: 0 0 10px #ff4500, 0 0 20px #ff5733; }
             50% { text-shadow: 0 0 15px #ff5733, 0 0 25px #ff7700; }
@@ -23,27 +22,27 @@
         }
 
         #todayTitle {
-            font-size: 42px;
+            font-size: 38px;
             font-weight: bold;
-            padding: 20px;
+            padding: 15px;
             animation: neonGlow 2s infinite alternate;
             color: #ff9900;
             text-transform: uppercase;
             letter-spacing: 2px;
-            transition: transform 0.3s ease-in-out;
         }
 
         #eventsTitle, #calendarTitle {
-            font-size: 26px;
+            font-size: 24px;
             font-weight: 600;
             color: #FFD700;
+            margin-top: 30px;
         }
 
         #eventsContainer {
-            padding: 10px;
+            padding: 15px;
             border-radius: 10px;
-            background: rgba(255, 69, 0, 0.1);
-            box-shadow: inset 0px 0px 15px rgba(255, 140, 0, 0.5);
+            background: rgba(255, 69, 0, 0.15);
+            box-shadow: inset 0px 0px 10px rgba(255, 140, 0, 0.5);
             margin: auto;
             width: 90%;
             max-width: 600px;
@@ -52,9 +51,9 @@
         #events {
             list-style-type: none;
             padding: 0;
+            margin: 0;
         }
 
-        /* 🔥 Efek Glow Api di List Event */
         @keyframes fireGlow {
             0% { box-shadow: 0 0 5px rgba(255, 100, 0, 0.5); }
             50% { box-shadow: 0 0 15px rgba(255, 140, 0, 1); }
@@ -62,9 +61,9 @@
         }
 
         #events li {
-            font-size: 20px;
+            font-size: 18px;
             font-weight: bold;
-            padding: 10px;
+            padding: 12px;
             margin: 10px auto;
             background: linear-gradient(90deg, #220b05, #ff4500, #ff7700);
             color: white;
@@ -88,16 +87,21 @@
             animation: fadeIn 0.5s ease-in-out;
         }
 
-        #showMore {
+        #showMore, #showLess {
             cursor: pointer;
             color: #FFD700;
             font-size: 18px;
-            margin-top: 10px;
+            margin-top: 15px;
             text-decoration: underline;
             display: block;
+            transition: 0.3s ease-in-out;
         }
 
-        /* 🔥 Border Gradient untuk Kalender */
+        #showMore:hover, #showLess:hover {
+            color: #ff4500;
+            transform: scale(1.1);
+        }
+
         #calendarFrame {
             width: 90%;
             height: 600px;
@@ -114,12 +118,25 @@
             font-size: 16px;
             color: #ff5733;
         }
+
+        @media (max-width: 600px) {
+            #todayTitle {
+                font-size: 30px;
+            }
+            #events li {
+                font-size: 16px;
+            }
+            #calendarFrame {
+                height: 500px;
+            }
+        }
     </style>
 
     <script defer src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
     <script>
-       const API_KEY = 'AIzaSyDjVXwUbLWZv052kRzAXmjvxEWTGuY7BLw'; 
+         const API_KEY = 'AIzaSyDjVXwUbLWZv052kRzAXmjvxEWTGuY7BLw'; 
         const CALENDAR_ID = '287026a99cb10f73790c5dbcebfc76a12e564079e02f3b3be161b752b7d78f56@group.calendar.google.com'; 
+
         function gapiLoaded() {
             gapi.load('client', loadClient);
         }
@@ -191,6 +208,15 @@
             document.getElementById("showMore").addEventListener("click", function () {
                 document.querySelectorAll("#events li").forEach(li => li.classList.add("show"));
                 this.style.display = "none";
+                document.getElementById("showLess").style.display = "block";
+            });
+
+            document.getElementById("showLess").addEventListener("click", function () {
+                document.querySelectorAll("#events li").forEach((li, index) => {
+                    if (index >= 3) li.classList.remove("show");
+                });
+                this.style.display = "none";
+                document.getElementById("showMore").style.display = "block";
             });
         });
     </script>
@@ -202,6 +228,7 @@
     <div id="eventsContainer">
         <ul id="events">Loading events...</ul>
         <span id="showMore">Lihat Semua</span>
+        <span id="showLess" style="display: none;">Sembunyikan</span>
     </div>
 
     <h2 id="calendarTitle">Calendar</h2>
