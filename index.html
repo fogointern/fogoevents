@@ -163,19 +163,21 @@
         }
 
         function getEvents() {
-    const now = new Date();
+            const now = new Date();
     const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
 
+    // Konversi waktu lokal pengguna ke format ISO dengan timezone yang sesuai
     const todayStart = new Date();
-    todayStart.setHours(0, 0, 0, 0);
+    todayStart.setHours(0, 0, 0, 0); // Set ke awal hari ini di timezone pengguna
 
     const todayEnd = new Date();
-    todayEnd.setHours(23, 59, 59, 999);
+    todayEnd.setHours(23, 59, 59, 999); // Set ke akhir hari ini di timezone pengguna
 
     gapi.client.calendar.events.list({
         'calendarId': CALENDAR_ID,
-        'timeMin': todayStart.toISOString(),
-        'timeMax': todayEnd.toISOString(),
+        'timeMin': todayStart.toISOString(), // Mulai dari 00:00 hari ini
+        'timeMax': todayEnd.toISOString(),   // Sampai 23:59 hari ini
+        'timeZone': userTimezone,            // Pastikan sesuai timezone pengguna
         'showDeleted': false,
         'singleEvents': true,
         'orderBy': 'startTime'
@@ -184,38 +186,33 @@
         const eventsList = document.getElementById('events');
         eventsList.innerHTML = '';
 
-        let eventCount = 0; // Untuk menghitung event yang valid
+        if (events.length > 0) {
+            events.forEach((event, index) => {
+                const eventTime = new Date(event.start.dateTime || event.start.date);
 
-        events.forEach(event => {
-            const eventTime = new Date(event.start.dateTime || event.start.date);
-
-            // **FILTER: Tampilkan hanya event yang belum terjadi**
-            if (eventTime >= now) {
                 const li = document.createElement('li');
                 const localTime = new Intl.DateTimeFormat(navigator.language, {
                     hour: '2-digit',
                     minute: '2-digit',
-                    timeZone: userTimezone
+                    timeZone: userTimezone // Format jam sesuai timezone pengguna
                 }).format(eventTime);
 
-                li.innerHTML = `🔥 <strong>${event.summary}</strong> - ⏰ ${localTime}`;
-                li.classList.add('show');
+                li.innerHTML = 🔥 <strong>${event.summary}</strong> - ⏰ ${localTime};
+                if (index < 3) li.classList.add('show');
                 eventsList.appendChild(li);
-                eventCount++;
+            });
+
+            if (eventsList.children.length === 0) {
+                eventsList.innerHTML = '<li class="show">No Events Today</li>';
+            } else {
+                document.getElementById('showMore').style.display = 'inline-block';
             }
-        });
-
-        // Jika tidak ada event yang tersisa setelah filter, tampilkan pesan
-        if (eventCount === 0) {
-            eventsList.innerHTML = '<li class="show">✅ Tidak ada event yang tersisa hari ini</li>';
+        } else {
+            eventsList.innerHTML = '<li class="show">No Events Today</li>';
         }
-
     }).catch(error => {
         console.error("Error fetching events:", error);
-        document.getElementById('events').innerHTML = '<li class="show">❌ Gagal memuat event</li>';
     });
-}
-
         }
 
        document.addEventListener("DOMContentLoaded", function () {
@@ -229,12 +226,12 @@
 
         // Set teks dan warna H1
         const todayTitle = document.getElementById("todayTitle");
-        todayTitle.innerHTML = `🔥 Fogo Events - ${formattedDate} 🔥`;
+        todayTitle.innerHTML = 🔥 Fogo Events - ${formattedDate} 🔥;
         todayTitle.style.color = randomColor;
 
             const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
             document.getElementById("calendarFrame").src = 
-                `https://calendar.google.com/calendar/embed?src=${CALENDAR_ID}&ctz=${encodeURIComponent(userTimezone)}`;
+                https://calendar.google.com/calendar/embed?src=${CALENDAR_ID}&ctz=${encodeURIComponent(userTimezone)};
 
             document.getElementById("showMore").addEventListener("click", function () {
                 document.querySelectorAll("#events li").forEach(li => li.classList.add('show'));
