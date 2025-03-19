@@ -6,6 +6,24 @@
     <title>🔥 Fogo Events 🔥</title>
 
     <style>
+
+         /* 🔥 Background Bergerak Lebih Smooth */
+        @keyframes fireEffect {
+            0% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+            100% { background-position: 0% 50%; }
+        }
+
+        body {
+            background: linear-gradient(-45deg, #0a0a0a, #290f0f, #662200, #0a0a0a);
+            background-size: 400% 400%;
+            animation: fireEffect 12s infinite linear;
+            color: white;
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            text-align: center;
+        }
         /* 🔥 Background Bergerak Lebih Smooth */
        @keyframes neonGlow {
     0% { text-shadow: 0 0 5px #FFD700, 0 0 10px #FFA500, 0 0 15px #FF8C00; }
