@@ -6,29 +6,30 @@
     <title>🔥 Fogo Events 🔥</title>
 
     <style>
-        /* 🔥 Background Bergerak Lebih Smooth */
-        @keyframes fireEffect {
-            0% { background-position: 0% 50%; }
-            50% { background-position: 100% 50%; }
-            100% { background-position: 0% 50%; }
-        }
+       /* 🔥 Efek Glow Background */
+    @keyframes glowBackground {
+        0% { box-shadow: 0 0 50px rgba(255, 69, 0, 0.3); }
+        50% { box-shadow: 0 0 100px rgba(255, 140, 0, 0.6); }
+        100% { box-shadow: 0 0 50px rgba(255, 69, 0, 0.3); }
+    }
 
-        body {
-            background: linear-gradient(-45deg, #0a0a0a, #290f0f, #662200, #0a0a0a);
-            background-size: 400% 400%;
-            animation: fireEffect 12s infinite linear;
-            color: white;
-            font-family: 'Poppins', sans-serif;
-            margin: 0;
-            padding: 0;
-            text-align: center;
-        }
+    body {
+        background: radial-gradient(circle, rgba(255, 69, 0, 0.2) 0%, rgba(0, 0, 0, 1) 80%);
+        animation: glowBackground 5s infinite alternate ease-in-out;
+        color: white;
+        font-family: 'Poppins', sans-serif;
+        margin: 0;
+        padding: 0;
+        text-align: center;
+        overflow: hidden;
+        position: relative;
+    }
 
-        /* 🔥 Animasi Warna Gradient untuk H1 */
-    @keyframes gradientText {
-        0% { background-position: 0% 50%; }
-        50% { background-position: 100% 50%; }
-        100% { background-position: 0% 50%; }
+    /* 🔥 Efek Glow untuk Teks H1 */
+    @keyframes glowText {
+        0% { text-shadow: 0 0 10px #ff4500, 0 0 20px #ff7700; }
+        50% { text-shadow: 0 0 20px #ff7700, 0 0 40px #ff0000; }
+        100% { text-shadow: 0 0 10px #ff4500, 0 0 20px #ff7700; }
     }
 
     #todayTitle {
@@ -36,22 +37,26 @@
         font-weight: 800;
         text-transform: uppercase;
         letter-spacing: 3px;
-        padding: 20px;
-        text-align: center;
-        background: linear-gradient(90deg, #ff5733, #ffbd69, #ff5733);
-        background-size: 200% 200%;
-        -webkit-background-clip: text;
-        -webkit-text-fill-color: transparent;
-        animation: gradientText 3s infinite alternate;
-        text-shadow: 0 0 10px rgba(255, 69, 0, 0.8), 0 0 20px rgba(255, 140, 0, 0.8);
-        transition: transform 0.3s ease-in-out;
+        animation: glowText 3s infinite alternate;
     }
 
-    /* 🔥 Efek Hover untuk H1 */
-    #todayTitle:hover {
-        transform: scale(1.1);
-        text-shadow: 0 0 20px rgba(255, 69, 0, 1), 0 0 30px rgba(255, 140, 0, 1);
-    
+    /* 🔥 Efek Glow Hover untuk Semua Elemen */
+    .glow-effect:hover {
+        text-shadow: 0 0 30px #ff4500, 0 0 60px #ff7700;
+        transition: 0.3s ease-in-out;
+    }
+
+    /* 🔥 Efek Lighting yang Bergerak dengan Mouse */
+    #light {
+        position: absolute;
+        width: 200px;
+        height: 200px;
+        background: radial-gradient(circle, rgba(255, 140, 0, 0.4) 0%, rgba(0, 0, 0, 0) 80%);
+        border-radius: 50%;
+        pointer-events: none;
+        mix-blend-mode: overlay;
+        transform: translate(-50%, -50%);
+        transition: transform 0.1s linear;
     }
 
     /* 🔥 Efek Neon yang Lebih Keren untuk H2 */
@@ -246,6 +251,16 @@
                 document.getElementById("showMore").style.display = "inline-block";
                 document.getElementById("showLess").style.display = "none";
             });
+            // 🔥 Efek Lighting Mengikuti Kursor
+            document.addEventListener("mousemove", function(e) {
+            let light = document.getElementById("light");
+            if (!light) {
+            light = document.createElement("div");
+            light.id = "light";
+            document.body.appendChild(light);
+        }
+        light.style.transform = `translate(${e.clientX}px, ${e.clientY}px)`;
+    });
         });
     </script>
 </head>
