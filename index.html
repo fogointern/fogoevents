@@ -24,10 +24,11 @@
             text-align: center;
         }
 
-        /* 🔥 Efek Neon Berubah Warna Hanya untuk h1 */
-        @keyframes neonColor {
+        /* 🔥 H1 Neon Kelap-Kelip */
+        @keyframes neonFlashing {
             0% { color: #ff4500; text-shadow: 0 0 10px #ff4500, 0 0 20px #ff5733, 0 0 30px #ff7700; }
-            100% { color: #ffcc00; text-shadow: 0 0 15px #ffcc00, 0 0 25px #ff9900, 0 0 35px #ff5500; }
+            50% { color: #ffcc00; text-shadow: 0 0 15px #ffcc00, 0 0 25px #ff9900, 0 0 35px #ff5500; }
+            100% { color: #ff4500; text-shadow: 0 0 10px #ff4500, 0 0 20px #ff5733, 0 0 30px #ff7700; }
         }
 
         #todayTitle {
@@ -35,20 +36,58 @@
             font-weight: bold;
             padding: 20px;
             border-radius: 10px;
-            animation: neonColor 3s infinite alternate;
+            animation: neonFlashing 1.5s infinite alternate;
             text-transform: uppercase;
             letter-spacing: 2px;
         }
 
-        #eventsTitle {
+        /* 🔥 H2 Neon Elegan */
+        #eventsTitle, #calendarTitle {
             font-size: 28px;
             font-weight: bold;
             margin-top: 20px;
             text-transform: uppercase;
             color: #ffcc00;
+            text-shadow: 0 0 10px #ffcc00, 0 0 20px #ff9900;
         }
 
-        /* 🔥 Style Kalender dengan Border Keren */
+        /* 🔥 List Event dalam Kotak Interaktif */
+        #events {
+            list-style-type: none;
+            padding: 0;
+            max-width: 600px;
+            margin: 20px auto;
+        }
+
+        #events li {
+            font-size: 20px;
+            font-weight: bold;
+            padding: 15px;
+            margin: 10px auto;
+            background: linear-gradient(90deg, #220b05, #ff4500, #ff7700);
+            color: white;
+            border-radius: 15px;
+            border: 3px solid #ffcc00;
+            box-shadow: 0px 0px 20px rgba(255, 140, 0, 0.8);
+            transition: transform 0.4s ease-in-out, box-shadow 0.4s ease-in-out;
+            cursor: pointer;
+        }
+
+        /* 🔥 Efek Hover */
+        @keyframes flameHover {
+            0% { background: linear-gradient(90deg, #330b05, #ff5500, #ffaa00); }
+            50% { background: linear-gradient(90deg, #440b05, #ff6600, #ffbb00); }
+            100% { background: linear-gradient(90deg, #330b05, #ff5500, #ffaa00); }
+        }
+
+        #events li:hover {
+            transform: scale(1.1);
+            animation: flameHover 1s infinite alternate;
+            box-shadow: 0px 0px 40px rgba(255, 140, 0, 1);
+            border-color: #ffd700;
+        }
+
+        /* 🔥 Style Kalender dengan Border Neon */
         #calendarContainer {
             display: flex;
             justify-content: center;
@@ -81,8 +120,7 @@
     <script defer src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
     <script>
          const API_KEY = 'AIzaSyDjVXwUbLWZv052kRzAXmjvxEWTGuY7BLw'; 
-        const CALENDAR_ID = '287026a99cb10f73790c5dbcebfc76a12e564079e02f3b3be161b752b7d78f56@group.calendar.google.com';  
-
+        const CALENDAR_ID = '287026a99cb10f73790c5dbcebfc76a12e564079e02f3b3be161b752b7d78f56@group.calendar.google.com'; 
         function gapiLoaded() {
             gapi.load('client', loadClient);
         }
@@ -135,33 +173,22 @@
 </head>
 <body>
 
-    <!-- 🔥 Judul dengan efek warna berubah -->
     <h1 id="todayTitle">⚡ Fogo Events ⚡</h1>
 
-    <!-- 🔥 Event Hari Ini -->
     <h2 id="eventsTitle">🔥 Today’s Events 🔥</h2>
     <ul id="events">Loading events...</ul>
 
-    <!-- 🔥 Google Calendar -->
     <h2 id="calendarTitle">📅 Calendar 📅</h2>
     <div id="calendarContainer">
         <iframe id="calendarFrame" frameborder="0" scrolling="no"></iframe>
     </div>
 
-    <!-- 🔥 Footer -->
     <div id="footer">Made with ❤️ by Irwan</div>
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
-            const today = new Date();
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            const formattedDate = today.toLocaleDateString('en-US', options);
-
-            document.getElementById("todayTitle").innerHTML = `⚡ Fogo Events - ${formattedDate} ⚡`;
-
-            const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
             document.getElementById("calendarFrame").src = 
-                `https://calendar.google.com/calendar/embed?src=${CALENDAR_ID}&ctz=${encodeURIComponent(userTimezone)}`;
+                `https://calendar.google.com/calendar/embed?src=${CALENDAR_ID}`;
         });
     </script>
 
