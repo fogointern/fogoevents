@@ -135,90 +135,68 @@
             }).then(() => getEvents());
         }
 
-        function getEvents() {
-    const now = new Date();
-    const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+       function getEvents() {
+        const now = new Date();
+        const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        const todayStart = new Date();
+        todayStart.setHours(0, 0, 0, 0);
+        const todayEnd = new Date();
+        todayEnd.setHours(23, 59, 59, 999);
 
-    const todayStart = new Date();
-    todayStart.setHours(0, 0, 0, 0);
+        gapi.client.calendar.events.list({
+            'calendarId': CALENDAR_ID,
+            'timeMin': todayStart.toISOString(),
+            'timeMax': todayEnd.toISOString(),
+            'timeZone': userTimezone,
+            'showDeleted': false,
+            'singleEvents': true,
+            'orderBy': 'startTime'
+        }).then(response => {
+            const events = response.result.items;
+            const eventsList = document.getElementById('events');
+            eventsList.innerHTML = '';
 
-    const todayEnd = new Date();
-    todayEnd.setHours(23, 59, 59, 999);
-
-    gapi.client.calendar.events.list({
-        'calendarId': CALENDAR_ID,
-        'timeMin': todayStart.toISOString(),
-        'timeMax': todayEnd.toISOString(),
-        'timeZone': userTimezone,  // Pastikan API membaca timezone pengguna
-        'showDeleted': false,
-        'singleEvents': true,
-        'orderBy': 'startTime'
-    }).then(response => {
-        const events = response.result.items;
-        const eventsList = document.getElementById('events');
-        eventsList.innerHTML = '';
-
-        let eventCount = 0;
-
-        events.forEach(event => {
-            let eventTimeUTC = new Date(event.start.dateTime || event.start.date);
-
-            // **Konversi Waktu Event ke Timezone Pengguna**
-            let eventTimeLocal = new Date(eventTimeUTC.toLocaleString("en-US", { timeZone: userTimezone }));
-
-            // **FILTER: Hanya tampilkan event yang belum terjadi**
-            if (eventTimeLocal >= now) {
-                const li = document.createElement('li');
-                const formattedTime = new Intl.DateTimeFormat(navigator.language, {
-                    hour: '2-digit',
-                    minute: '2-digit',
-                    timeZone: userTimezone  // Format jam sesuai timezone pengguna
-                }).format(eventTimeLocal);
-
-                li.innerHTML = `🔥 <strong>${event.summary}</strong> - ⏰ ${formattedTime}`;
-                li.classList.add('show');
-                eventsList.appendChild(li);
-                eventCount++;
-            }
-        });
-
-        // Jika tidak ada event yang tersisa setelah filter, tampilkan pesan
-        if (eventCount === 0) {
-            eventsList.innerHTML = '<li class="show">✅ Tidak ada event yang tersisa hari ini</li>';
-        }
-
-    }).catch(error => {
-        console.error("Error fetching events:", error);
-        document.getElementById('events').innerHTML = '<li class="show">❌ Gagal memuat event</li>';
-    });
-}
-
-        document.addEventListener("DOMContentLoaded", function () {
-            const today = new Date();
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
-            const formattedDate = today.toLocaleDateString('en-US', options);
-
-            const todayTitle = document.getElementById("todayTitle");
-            todayTitle.innerHTML = `🔥 Fogo Events - ${formattedDate} 🔥`;
-
-            const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-            document.getElementById("calendarFrame").src = 
-                `https://calendar.google.com/calendar/embed?src=${CALENDAR_ID}&ctz=${encodeURIComponent(userTimezone)}`;
-
-            document.getElementById("showMore").addEventListener("click", function () {
-                document.querySelectorAll("#events li").forEach(li => li.classList.add('show'));
-                document.getElementById("showMore").style.display = "none";
-                document.getElementById("showLess").style.display = "inline-block";
-            });
-
-            document.getElementById("showLess").addEventListener("click", function () {
-                document.querySelectorAll("#events li").forEach((li, index) => {
-                    if (index >= 3) li.classList.remove('show');
+            if (events.length > 0) {
+                events.forEach((event, index) => {
+                    const eventTime = new Date(event.start.dateTime || event.start.date);
+                    const li = document.createElement('li');
+                    const localTime = new Intl.DateTimeFormat(navigator.language, {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        timeZone: userTimezone
+                    }).format(eventTime);
+                    
+                    li.innerHTML = `🔥 <strong>${event.summary}</strong> - ⏰ ${localTime}`;
+                    if (index < 3) li.classList.add('show');
+                    eventsList.appendChild(li);
                 });
-                document.getElementById("showMore").style.display = "inline-block";
-                document.getElementById("showLess").style.display = "none";
-            });
+                
+                if (events.length > 3) {
+                    document.getElementById('showMore').style.display = 'inline-block';
+                }
+            } else {
+                eventsList.innerHTML = '<li class="show">No Events Today</li>';
+            }
+        }).catch(error => {
+            console.error("Error fetching events:", error);
         });
+    }
+
+    document.addEventListener("DOMContentLoaded", function () {
+        document.getElementById("showMore").addEventListener("click", function () {
+            document.querySelectorAll("#events li").forEach(li => li.classList.add('show'));
+            document.getElementById("showMore").style.display = "none";
+            document.getElementById("showLess").style.display = "inline-block";
+        });
+
+        document.getElementById("showLess").addEventListener("click", function () {
+            document.querySelectorAll("#events li").forEach((li, index) => {
+                if (index >= 3) li.classList.remove('show');
+            });
+            document.getElementById("showMore").style.display = "inline-block";
+            document.getElementById("showLess").style.display = "none";
+        });
+    });
     </script>
 </head>
 <body>
