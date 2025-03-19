@@ -3,19 +3,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>⚡ Fogo Events - Neon Fire ⚡</title>
+    <title>⚡ Fogo Events ⚡</title>
 
     <style>
-        /* 🔥 Background Bergerak Orange-Hitam */
-        @keyframes fireBackground {
+        /* 🔥 Background bergerak smooth (Orange - Merah - Hitam) */
+        @keyframes smoothFireBackground {
             0% { background: #0a0a0a; }
-            50% { background: #ff4500; }
-            100% { background: #0a0a0a; }
+            50% { background: #441500; }
+            100% { background: #ff5500; }
         }
 
         body {
-            background-size: cover;
-            animation: fireBackground 6s infinite alternate;
+            animation: smoothFireBackground 15s infinite alternate ease-in-out;
             color: white;
             font-family: 'Poppins', sans-serif;
             margin: 0;
@@ -23,11 +22,11 @@
             text-align: center;
         }
 
-        /* 🔥 Efek Glow Neon Kelap-Kelip untuk H1 */
+        /* 🔥 Efek Glow Neon untuk Judul */
         @keyframes neonGlow {
-            0% { text-shadow: 0 0 15px #ff4500, 0 0 30px #ff5733, 0 0 45px #ff7700; }
-            50% { text-shadow: 0 0 20px #ff5733, 0 0 35px #ff7700, 0 0 50px #ff9900; }
-            100% { text-shadow: 0 0 15px #ff4500, 0 0 30px #ff5733, 0 0 45px #ff7700; }
+            0% { text-shadow: 0 0 15px #ff4500, 0 0 30px #ff7700; }
+            50% { text-shadow: 0 0 20px #ff7700, 0 0 40px #ff9900; }
+            100% { text-shadow: 0 0 15px #ff4500, 0 0 30px #ff7700; }
         }
 
         #todayTitle {
@@ -35,54 +34,62 @@
             font-weight: bold;
             padding: 20px;
             border-radius: 10px;
-            animation: neonGlow 1.5s infinite alternate;
+            animation: neonGlow 2s infinite alternate;
             color: #ff9900;
             text-transform: uppercase;
             letter-spacing: 2px;
         }
 
-        /* 🔥 Tulisan "Today’s Events" & "Calendar" Lebih Smooth */
+        /* 🔥 Teks Event dan Calendar lebih tebal & warna lebih jelas */
         #eventsTitle, #calendarTitle {
             font-size: 26px;
-            font-weight: normal;
-            color: #ff9900;
-            text-shadow: 0 0 10px rgba(255, 153, 0, 0.7);
+            font-weight: 600; /* Lebih tebal sedikit */
+            color: #FFD700; /* Gold terang, lebih terlihat */
+            margin-top: 20px;
+            text-transform: uppercase;
         }
 
-        /* 🔥 List Event dalam Kotak Elegan */
+        /* 🔥 Kotak List Event lebih keren & smooth */
         #events {
             list-style-type: none;
             padding: 0;
         }
 
         #events li {
-            background: rgba(0, 0, 0, 0.7);
-            color: white;
             font-size: 22px;
             font-weight: bold;
             padding: 15px;
             margin: 10px auto;
-            border-radius: 10px;
+            background: linear-gradient(90deg, #220b05, #ff4500, #ff7700);
+            color: white;
+            border-radius: 15px;
             max-width: 600px;
             text-align: center;
-            border: 2px solid #ff9900;
-            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+            border: 2px solid #FFD700; /* Gold */
+            box-shadow: 0px 0px 15px rgba(255, 140, 0, 0.6);
+            transition: transform 0.4s ease-in-out, box-shadow 0.4s ease-in-out;
         }
 
-        /* 🔥 Hover dengan Efek Neon */
+        /* 🔥 Hover dengan efek api neon */
+        @keyframes flameHover {
+            0% { background: linear-gradient(90deg, #330b05, #ff5500, #ffaa00); }
+            50% { background: linear-gradient(90deg, #440b05, #ff6600, #ffbb00); }
+            100% { background: linear-gradient(90deg, #330b05, #ff5500, #ffaa00); }
+        }
+
         #events li:hover {
             transform: scale(1.05);
-            box-shadow: 0px 0px 15px rgba(255, 153, 0, 0.9);
+            animation: flameHover 1s infinite alternate;
+            box-shadow: 0px 0px 25px rgba(255, 140, 0, 1);
         }
 
-        /* 🔥 Frame Kalender lebih smooth dengan glowing effect */
+        /* 🔥 Frame Kalender lebih smooth */
         #calendarFrame {
-            border: none;
-            border-radius: 10px;
-            box-shadow: 0px 0px 20px rgba(255, 69, 0, 0.8), 
-                        0px 0px 40px rgba(255, 0, 0, 0.6);
-            width: 90%;
-            height: 600px;
+            border: 3px solid transparent;
+            border-radius: 15px;
+            padding: 5px;
+            box-shadow: 0px 0px 25px rgba(255, 69, 0, 0.7);
+            background: linear-gradient(45deg, #ff4500, #ff2200);
         }
     </style>
 
@@ -143,19 +150,16 @@
 </head>
 <body>
 
-    <!-- 🔥 Judul Neon Berubah Warna -->
-    <h1 id="todayTitle">⚡ Fogo Events 🔥</h1>
+    <!-- 🔥 Judul dengan tanggal -->
+    <h1 id="todayTitle">⚡ Fogo Events ⚡</h1>
 
     <!-- 🔥 Event Hari Ini -->
-    <h2 id="eventsTitle"> Today’s Events </h2>
+    <h2 id="eventsTitle"> Today's Events </h2>
     <ul id="events">Loading events...</ul>
 
     <!-- 🔥 Google Calendar -->
     <h2 id="calendarTitle"> Calendar </h2>
-    <iframe id="calendarFrame" frameborder="0" scrolling="no"></iframe>
-
-    <!-- 🔥 Footer -->
-    <p style="margin-top: 30px; color: #ffcc00; font-size: 14px;">Made with ❤️ by Irwan</p>
+    <iframe id="calendarFrame" width="90%" height="600" frameborder="0" scrolling="no"></iframe>
 
     <script>
         document.addEventListener("DOMContentLoaded", function () {
@@ -163,7 +167,7 @@
             const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
             const formattedDate = today.toLocaleDateString('en-US', options);
 
-            document.getElementById("todayTitle").innerHTML = `⚡ Fogo Events - ${formattedDate} 🔥`;
+            document.getElementById("todayTitle").innerHTML = `⚡ Fogo Events - ${formattedDate} ⚡`;
 
             const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
             document.getElementById("calendarFrame").src = 
