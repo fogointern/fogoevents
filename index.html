@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>🔥 Fogo Events - Neon Fire 🔥</title>
+    <title>Fogo Events ⚡ </title>
 
     <style>
         /* 🔥 Background Bergerak (Lava & Api) */
@@ -88,8 +88,8 @@
 
     <script defer src="https://apis.google.com/js/api.js" onload="gapiLoaded()"></script>
     <script>
-        const API_KEY = 'YOUR_API_KEY_HERE'; 
-        const CALENDAR_ID = 'YOUR_CALENDAR_ID_HERE'; 
+         const API_KEY = 'AIzaSyDjVXwUbLWZv052kRzAXmjvxEWTGuY7BLw'; 
+        const CALENDAR_ID = '287026a99cb10f73790c5dbcebfc76a12e564079e02f3b3be161b752b7d78f56@group.calendar.google.com';  
 
         function gapiLoaded() {
             gapi.load('client', loadClient);
@@ -142,7 +142,7 @@
     </script>
 </head>
 <body>
-    <h1 id="todayTitle">⚡🔥 Fogo Events ⚡🔥</h1>
+    <h1 id="todayTitle">⚡ Fogo Events ⚡</h1>
     <h2 id="eventsTitle"> Today’s Events </h2>
     <ul id="events">Loading events...</ul>
     <h2 style="text-align: center; font-size: 24px; font-weight: bold; color: #ffcc00;"> Calendar </h2>
@@ -153,7 +153,7 @@
             const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
             const formattedDate = today.toLocaleDateString('en-US', options);
 
-            document.getElementById("todayTitle").innerHTML = `⚡🔥 Fogo Events - ${formattedDate} ⚡🔥`;
+            document.getElementById("todayTitle").innerHTML = `⚡ Fogo Events - ${formattedDate} ⚡`;
 
             const userTimezone = Intl.DateTimeFormat().resolvedOptions().timeZone;
             document.getElementById("calendarFrame").src = 
