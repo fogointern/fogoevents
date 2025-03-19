@@ -136,44 +136,69 @@
             }).then(() => getEvents());
         }
 
-        function getEvents() {
-            const now = new Date();
-            const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
-            now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+        <script>
+    function getEvents() {
+        const now = new Date();
+        const timeZone = Intl.DateTimeFormat().resolvedOptions().timeZone;
+        now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
 
-            gapi.client.calendar.events.list({
-                'calendarId': CALENDAR_ID,
-                'timeMin': now.toISOString(),
-                'singleEvents': true,
-                'orderBy': 'startTime'
-            }).then(response => {
-                const events = response.result.items;
-                const eventsList = document.getElementById('events');
-                eventsList.innerHTML = '';
+        gapi.client.calendar.events.list({
+            'calendarId': CALENDAR_ID,
+            'timeMin': now.toISOString(),
+            'singleEvents': true,
+            'orderBy': 'startTime'
+        }).then(response => {
+            const events = response.result.items;
+            const eventsList = document.getElementById('events');
+            eventsList.innerHTML = '';
 
-                let count = 0;
+            let count = 0;
+            const eventElements = [];
 
-                events.forEach(event => {
-                    const eventTime = new Date(event.start.dateTime || event.start.date);
-                    if (eventTime >= now) { // Filter event yang belum lewat
-                        count++;
-                        const li = document.createElement('li');
-                        const localTime = new Intl.DateTimeFormat(navigator.language, {
-                            hour: '2-digit',
-                            minute: '2-digit',
-                            timeZone
-                        }).format(eventTime);
-                        li.innerHTML = `<strong>${event.summary}</strong> - ⏰ ${localTime}`;
-                        eventsList.appendChild(li);
-                    }
-                });
-
-                if (count === 0) {
-                    eventsList.innerHTML = '<li>No Events Remaining Today</li>';
+            events.forEach(event => {
+                const eventTime = new Date(event.start.dateTime || event.start.date);
+                if (eventTime >= now) { // Filter event yang belum lewat
+                    count++;
+                    const li = document.createElement('li');
+                    const localTime = new Intl.DateTimeFormat(navigator.language, {
+                        hour: '2-digit',
+                        minute: '2-digit',
+                        timeZone
+                    }).format(eventTime);
+                    li.innerHTML = `<strong>${event.summary}</strong> - ⏰ ${localTime}`;
+                    eventElements.push(li);
                 }
-            }).catch(error => {
-                console.error("Error fetching events:", error);
             });
+
+            if (count === 0) {
+                eventsList.innerHTML = '<li>No Events Remaining Today</li>';
+            } else {
+                const maxVisible = 3;
+                eventElements.slice(0, maxVisible).forEach(event => eventsList.appendChild(event));
+
+                if (count > maxVisible) {
+                    const showMoreButton = document.createElement('button');
+                    showMoreButton.textContent = 'Tampilkan Semua';
+                    showMoreButton.className = 'toggle-btn';
+                    showMoreButton.onclick = () => {
+                        if (showMoreButton.textContent === 'Tampilkan Semua') {
+                            eventElements.slice(maxVisible).forEach(event => eventsList.appendChild(event));
+                            showMoreButton.textContent = 'Sembunyikan';
+                        } else {
+                            eventElements.slice(maxVisible).forEach(event => event.remove());
+                            showMoreButton.textContent = 'Tampilkan Semua';
+                        }
+                    };
+                    eventsList.appendChild(showMoreButton);
+                }
+            }
+        }).catch(error => {
+            console.error("Error fetching events:", error);
+            document.getElementById('events').innerHTML = '<li>Error loading events</li>';
+        });
+    }
+</script>
+
         }
 
         document.addEventListener("DOMContentLoaded", function () {
