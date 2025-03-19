@@ -24,43 +24,35 @@
             text-align: center;
         }
 
-       /* 🔥 Efek Neon Smooth untuk H1 */
-@keyframes neonGlowH1 {
-    0% { text-shadow: 0 0 5px #FF4500, 0 0 10px #FF5733, 0 0 15px #FF7700; }
-    50% { text-shadow: 0 0 10px #FF5733, 0 0 20px #FF7700, 0 0 30px #FF9900; }
-    100% { text-shadow: 0 0 5px #FF4500, 0 0 10px #FF5733, 0 0 15px #FF7700; }
-}
+        /* 🔥 Animasi Warna Gradient untuk H1 */
+    @keyframes gradientText {
+        0% { background-position: 0% 50%; }
+        50% { background-position: 100% 50%; }
+        100% { background-position: 0% 50%; }
+    }
 
-#todayTitle {
-    font-size: 50px;
-    font-weight: 700; /* Lebih ringan agar tidak terlalu tebal */
-    text-transform: uppercase;
-    letter-spacing: 3px;
-    padding: 20px;
-    text-align: center;
-    color: #FF4500;
-    animation: neonGlowH1 2s infinite alternate;
-    position: relative;
-}
+    #todayTitle {
+        font-size: 48px;
+        font-weight: 800;
+        text-transform: uppercase;
+        letter-spacing: 3px;
+        padding: 20px;
+        text-align: center;
+        background: linear-gradient(90deg, #ff5733, #ffbd69, #ff5733);
+        background-size: 200% 200%;
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        animation: gradientText 3s infinite alternate;
+        text-shadow: 0 0 10px rgba(255, 69, 0, 0.8), 0 0 20px rgba(255, 140, 0, 0.8);
+        transition: transform 0.3s ease-in-out;
+    }
 
-/* 🔥 Efek Asap di Belakang H1 */
-@keyframes smokeEffect {
-    0% { opacity: 0.1; transform: translateY(0) scale(1); }
-    50% { opacity: 0.3; transform: translateY(-10px) scale(1.1); }
-    100% { opacity: 0; transform: translateY(-20px) scale(1.2); }
-}
-
-.smoke {
-    position: absolute;
-    width: 150px;
-    height: 60px;
-    background: radial-gradient(circle, rgba(255,255,255,0.2) 10%, rgba(0,0,0,0) 70%);
-    top: 50%;
-    left: 50%;
-    opacity: 0;
-    animation: smokeEffect 2s infinite ease-in-out;
-    pointer-events: none;
-}
+    /* 🔥 Efek Hover untuk H1 */
+    #todayTitle:hover {
+        transform: scale(1.1);
+        text-shadow: 0 0 20px rgba(255, 69, 0, 1), 0 0 30px rgba(255, 140, 0, 1);
+    
+    }
 
     /* 🔥 Efek Neon yang Lebih Keren untuk H2 */
     @keyframes neonGlow {
@@ -262,7 +254,7 @@
 </head>
 <body>
 
-    <h1 id="todayTitle">🔥 Fogo Events <span class="smoke"></span></h1>
+    <h1 id="todayTitle">🔥 Fogo Events 🔥</h1>
 
     <h2 id="eventsTitle">Today's Events</h2>
     <div id="eventsContainer">
