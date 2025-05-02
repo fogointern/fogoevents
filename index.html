@@ -27,7 +27,7 @@
         /* 🔥 Logo sebagai Header */
         #logoHeader {
             margin-top: 30px;
-            max-width: 100%;
+            width: 100%; /* Logo Memanjang Sesuai Layar */
             height: auto;
         }
 
@@ -136,16 +136,29 @@
                 width: 70%;
             }
 
-       /* 🔥 Flame Ghost */
+        /* 🔥 Flame Ghost Bergerak */
         .flame-ghost {
-      position: fixed;
-      bottom: 20px;
-      right: 20px;
-      width: 80px;
-      height: auto;
-      opacity: 0.8;
-      animation: float 3s ease-in-out infinite;
-    }
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            width: 80px;
+            height: auto;
+            opacity: 0.8;
+            animation: float 5s ease-in-out infinite; /* Gerakan Melayang */
+        }
+
+        /* Animasi bergerak untuk Flame Ghost */
+        @keyframes float {
+            0% {
+                transform: translateY(0);
+            }
+            50% {
+                transform: translateY(-10px); /* Bergerak naik */
+            }
+            100% {
+                transform: translateY(0); /* Kembali ke posisi semula */
+            }
+        }
         }
     </style>
 
