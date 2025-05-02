@@ -24,13 +24,15 @@
             text-align: center;
         }
         /* 🔥 Logo sebagai Header */
-       #logoHeader {
-    width: 100vw;         /* Logo selebar layar */
-    height: 5.5vh;        /* Sekitar 1/18 dari tinggi layar (100/18 ≈ 5.5) */
-    object-fit: contain;  /* Menjaga proporsi gambar, muat di kotak tanpa crop */
+      #logoHeader {
+    width: 100vw;
+    height: auto;
+    max-height: 10vh;
+    object-fit: contain;
     display: block;
-    margin: 0 auto;       /* Tengah jika ada margin atau padding */
+    margin: 10px auto;
 }
+
 
         /* 🔥 Neon Glow Efek untuk Judul */
         @keyframes neonGlow {
